@@ -1,0 +1,21 @@
+{
+  "name": "platformik",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/parser": "^8.56.1",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1",
+    "globals": "^17.4.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "bun test"
+  }
+}

@@ -1,0 +1,85 @@
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
+
+fileGroups:
+  sources:
+    - glob: 'apps/**/src/**/*'
+    - glob: 'apps/**/src/tsconfig.json'
+    - glob: 'apps/**/src/package.json'
+    - glob: 'packages/**/src/**/*'
+    - glob: 'packages/**/tsconfig.json'
+    - glob: 'packages/**/package.json'
+    - file: 'package.json'
+    - file: 'tsconfig.base.json'
+    - file: 'eslint.config.mjs'
+    - file: 'prettier.config.mjs'
+  tests:
+    - glob: 'apps/**/test/*'
+    - glob: 'packages/**/test/*'
+
+tasks:
+  # Type checking — runs tsc --noEmit for every package and app
+  typecheck:
+    command: 'tsc --noEmit'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+    options:
+      cache: true
+      runInCI: true
+
+  # Lint — ESLint with flat config inherited from root
+  lint:
+    command: 'eslint --cache --cache-location .eslintcache .'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+    options:
+      cache: true
+      runInCI: true
+
+  lint-fix:
+    command: 'eslint --cache --cache-location .eslintcache --fix .'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+    options:
+      cache: true
+
+  # Format check — Prettier (non-destructive in CI)
+  format:
+    command: 'prettier --check .'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+    options:
+      cache: false
+      runInCI: true
+
+  format-fix:
+    command: 'prettier --write .'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+    options:
+      cache: false
+      runInCI: false
+
+  # Tests — bun test, requires docker-compose for infra
+  test:
+    command: 'bun test'
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'
+    options:
+      cache: false
+      runInCI: true
+
+  validate:
+    deps:
+      - typecheck
+      - lint
+      - format
+      - test
+    inputs:
+      - '@group(sources)'
+      - '@group(tests)'

@@ -6,7 +6,7 @@ Bounded contexts:
 
 - `<lang>`: `py|ts|go|rs`
 - `<context>`: kebab-case token created as needed
-- `<role>`: `contracts|domain|workflows|infra|migrations`
+- `<role>`: `domain|workflows|infra|migrations`
 
 Shared/group packages:
 `packages/<lang>-(lib|infra|platform|tooling)-<name>(-<subname>...)*`
@@ -35,4 +35,3 @@ Examples:
 - `apps/bff-web-py`
 - `apps/worker-temporal-py`
 - `apps/spa-web`
-
