@@ -19,7 +19,3 @@ This repository is currently **scaffolding-only** for Platformik: an educational
 
 ## Naming quick reference
 See `docs/architecture/naming.md`.
-
-## Rename note
-The folder is currently named `messenger` due to sandbox constraints, but all naming inside the repo uses **platformik**. Rename the directory later to `platformik` and reopen the session.
-
