@@ -1,4 +1,4 @@
-# `apps/spa-web`
+# `apps/web-platform-ts`
 
 SvelteKit SPA for:
 - Template gallery
@@ -8,4 +8,3 @@ SvelteKit SPA for:
 - Memory diff viewer
 
 No code yet (scaffolding phase).
-

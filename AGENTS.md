@@ -1,10 +1,5 @@
 # Agent instructions (Platformik)
 
-## Phase: scaffolding only
-
-Do **not** implement product runtime features unless explicitly asked. This phase is limited to:
-folder structure, configs, docs, and tooling setup.
-
 ## Monorepo rules
 
 - Only `apps/` are deployable (composition roots).

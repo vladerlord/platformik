@@ -3,7 +3,7 @@ import path from 'node:path'
 const INTERNAL_SCOPE_PREFIX = '@platformik/'
 
 const BOUNDED_ROLES = new Set(['domain', 'workflows', 'infra', 'migrations'])
-const SHARED_GROUPS = new Set(['lib', 'infra', 'platform', 'tooling'])
+const SHARED_GROUPS = new Set(['lib', 'infra', 'platform'])
 
 const VALID_KEYS = new Set([
   'app',
@@ -14,7 +14,6 @@ const VALID_KEYS = new Set([
   'shared:lib',
   'shared:infra',
   'shared:platform',
-  'shared:tooling',
 ])
 
 function normalizePath(absolutePath) {

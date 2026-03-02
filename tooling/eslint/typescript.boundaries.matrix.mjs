@@ -2,7 +2,7 @@ export default {
   app: {
     allow: ["bounded:workflows", "bounded:infra", "shared:lib", "shared:infra", "shared:platform"],
     denyReason:
-      "apps may depend on workflows/infra and shared lib/infra/platform only; apps must not import domain/migrations/tooling"
+      "apps may depend on workflows/infra and shared lib/infra/platform only; apps must not import domain or migrations"
   },
   "bounded:domain": {
     allow: ["shared:lib"],
@@ -33,8 +33,5 @@ export default {
   "shared:platform": {
     allow: ["shared:lib", "shared:infra"],
     denyReason: "platform-* may depend only on lib-* and infra-* (and itself)"
-  },
-  "shared:tooling": {
-    allowAll: true
   }
 };

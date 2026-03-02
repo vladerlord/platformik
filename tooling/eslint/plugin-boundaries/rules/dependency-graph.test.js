@@ -3,7 +3,7 @@ import { ESLint } from 'eslint'
 import tsParser from '@typescript-eslint/parser'
 
 import plugin from '../index.js'
-import matrix from '../../../configs/eslint/typescript.boundaries.matrix.mjs'
+import matrix from '../../typescript.boundaries.matrix.mjs'
 
 async function lint({ filename, code, withMatrix = true }) {
   const eslint = new ESLint({
@@ -41,7 +41,7 @@ async function lint({ filename, code, withMatrix = true }) {
 
 test('reports misconfiguration when matrix missing', async () => {
   const results = await lint({
-    filename: '/repo/apps/spa-web/src/main.tsx',
+    filename: '/repo/apps/web-platform-ts/src/main.tsx',
     code: 'import "@platformik/ts-billing-workflows";',
     withMatrix: false,
   })
@@ -88,7 +88,7 @@ test('valid imports', async () => {
 
   expect(
     await lint({
-      filename: '/repo/apps/spa-web/src/main.tsx',
+      filename: '/repo/apps/web-platform-ts/src/main.tsx',
       code: 'import "@platformik/ts-billing-workflows";',
     }),
   ).toHaveLength(0)
@@ -110,7 +110,7 @@ test('valid imports', async () => {
 
 test('invalid imports', async () => {
   const unknown = await lint({
-    filename: '/repo/apps/spa-web/src/main.tsx',
+    filename: '/repo/apps/web-platform-ts/src/main.tsx',
     code: 'import "@platformik/ts-billing";',
   })
   expect(unknown).toHaveLength(1)
@@ -118,7 +118,7 @@ test('invalid imports', async () => {
   expect(unknown[0].message).toContain('cannot be classified')
 
   const appToDomain = await lint({
-    filename: '/repo/apps/spa-web/src/main.tsx',
+    filename: '/repo/apps/web-platform-ts/src/main.tsx',
     code: 'import "@platformik/ts-billing-domain";',
   })
   expect(appToDomain).toHaveLength(1)
@@ -153,14 +153,14 @@ test('invalid imports', async () => {
   expect(migrationsToDomain[0].message).toContain('must not import')
 
   const crossLang = await lint({
-    filename: '/repo/apps/spa-web/src/main.tsx',
+    filename: '/repo/apps/web-platform-ts/src/main.tsx',
     code: 'import "@platformik/py-billing-domain";',
   })
   expect(crossLang).toHaveLength(1)
   expect(crossLang[0].message).toContain('cross-language')
 
   const crossPkgRel = await lint({
-    filename: '/repo/apps/spa-web/src/main.tsx',
+    filename: '/repo/apps/web-platform-ts/src/main.tsx',
     code: 'import "../../../packages/ts-billing-domain/src/index";',
   })
   expect(crossPkgRel).toHaveLength(1)

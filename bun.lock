@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 1,
   "workspaces": {
     "": {
       "name": "@platformik/platformik",
@@ -12,9 +11,6 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.56.1",
       },
-    },
-    "packages/ts-tooling-eslint-plugin-boundaries": {
-      "name": "@platformik/ts-tooling-eslint-plugin-boundaries",
     },
   },
   "packages": {
@@ -41,8 +37,6 @@
     "@humanwhocodes/module-importer": ["@humanwhocodes/module-importer@1.0.1", "", {}, "sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA=="],
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
-
-    "@platformik/ts-tooling-eslint-plugin-boundaries": ["@platformik/ts-tooling-eslint-plugin-boundaries@workspace:packages/ts-tooling-eslint-plugin-boundaries"],
 
     "@types/esrecurse": ["@types/esrecurse@4.3.1", "", {}, "sha512-xJBAbDifo5hpffDBuHl0Y8ywswbiAp/Wi7Y/GtAgSlZyIABppyurxVueOPE8LUQOxdlgi6Zqce7uoEpqNTeiUw=="],
 

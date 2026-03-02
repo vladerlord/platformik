@@ -1,6 +1,6 @@
 import tsParser from "@typescript-eslint/parser";
 
-import boundaries from "../../packages/ts-tooling-eslint-plugin-boundaries/index.js";
+import boundaries from "./plugin-boundaries/index.js";
 import matrix from "./typescript.boundaries.matrix.mjs";
 
 export default {

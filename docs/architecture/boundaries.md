@@ -10,6 +10,20 @@ This document defines intended architectural boundaries in the monorepo. Tooling
   import Python sources). Cross-language integration happens via network APIs and/or
   language-neutral schema/IDL + generated artifacts (TBD).
 
+## App naming (composition roots)
+
+Apps: `apps/<role>-<service>-<lang>`
+
+- `<role>`: `web|bff|worker|service|cli`
+- `<service>`: kebab-case ownership/capability token
+- `<lang>`: `py|ts|go|rs`
+
+Examples:
+
+- `apps/web-platform-ts`
+- `apps/bff-platform-py`
+- `apps/worker-orchestration-py`
+
 ## Package classification (by naming)
 
 Bounded contexts: `packages/<lang>-<context>-<role>`
@@ -18,11 +32,11 @@ Bounded contexts: `packages/<lang>-<context>-<role>`
 - `<context>`: kebab-case token created as needed
 - `<role>`: `domain|workflows|infra|migrations`
 
-Shared/group packages: `packages/<lang>-(lib|infra|platform|tooling)-<name>(-<subname>...)*`
+Shared/group packages: `packages/<lang>-(lib|infra|platform)-<name>(-<subname>...)*`
 
-Apps (composition roots): `apps/<kind>-<target>(-<runtime>)?`
+## Package roles (strict architectural layers)
 
-## Role definitions (strict)
+These roles apply to `packages/*` only: `domain|workflows|infra|migrations`.
 
 ### `domain`
 
@@ -60,7 +74,7 @@ Must not depend on:
 - any `<lang>-*-workflows`
 - any `<lang>-*-infra` (context-specific adapters)
 - any `<lang>-*-migrations`
-- any `<lang>-tooling-*`
+- `tooling/*` code/artifacts
 
 ### `infra` (context-specific adapters)
 
@@ -79,7 +93,7 @@ Must not depend on:
 
 - any `<lang>-platform-*`
 - other bounded contexts’ packages
-- any `<lang>-tooling-*`
+- `tooling/*` code/artifacts
 
 ### `migrations`
 
@@ -97,7 +111,7 @@ Must not depend on:
 - any `<lang>-*-domain`
 - any `<lang>-*-workflows`
 - any `<lang>-platform-*`
-- any `<lang>-tooling-*`
+- `tooling/*` code/artifacts
 
 ## Shared groups (intent)
 
@@ -105,7 +119,7 @@ Must not depend on:
 - `<lang>-infra-*`: internal technical libraries/wrappers (Postgres/Redis/Temporal/Rabbit/etc.
   primitives)
 - `<lang>-platform-*`: external provider wrappers (OpenAI/Anthropic/S3/etc.)
-- `<lang>-tooling-*`: repo tooling; runtime must not depend on tooling
+- `tooling/*`: repo tooling; runtime code must not depend on it
 
 ## Apps are composition roots
 
@@ -122,7 +136,7 @@ Apps should:
 
 Apps must not:
 
-- depend on `<lang>-tooling-*`
+- depend on `tooling/*`
 
 ## Cross-context rule
 
@@ -153,7 +167,7 @@ Must not depend on:
 
 - `<lang>-*-domain`
 - `<lang>-*-migrations`
-- `<lang>-tooling-*`
+- `tooling/*`
 
 ### `<lang>-<ctx>-domain`
 
@@ -169,7 +183,7 @@ Must not depend on:
 - `<lang>-<any>-migrations`
 - `<lang>-infra-*`
 - `<lang>-platform-*`
-- `<lang>-tooling-*`
+- `tooling/*`
 
 ### `<lang>-<ctx>-workflows`
 
@@ -185,7 +199,7 @@ Must not depend on:
 - `<lang>-<any>-workflows`
 - `<lang>-<any>-infra` (context-specific adapters)
 - `<lang>-<any>-migrations`
-- `<lang>-tooling-*`
+- `tooling/*`
 
 Note: this is the only allowed cross-context source dependency (`workflows` → other contexts’
 `domain`).
@@ -204,7 +218,7 @@ Must not depend on:
 - `<lang>-<any>-workflows`
 - `<lang>-<any>-migrations`
 - any other bounded-context packages (other contexts’ `domain|workflows|infra|migrations`)
-- `<lang>-tooling-*`
+- `tooling/*`
 
 ### `<lang>-<ctx>-migrations`
 
@@ -217,7 +231,7 @@ Must not depend on:
 
 - bounded-context packages (`*-domain|*-workflows|*-infra|*-migrations`)
 - `<lang>-platform-*`
-- `<lang>-tooling-*`
+- `tooling/*`
 
 ### `<lang>-lib-*`
 
@@ -230,7 +244,7 @@ Must not depend on:
 - bounded-context packages
 - `<lang>-infra-*`
 - `<lang>-platform-*`
-- `<lang>-tooling-*`
+- `tooling/*`
 
 ### `<lang>-infra-*` (shared infra primitives)
 
@@ -243,7 +257,7 @@ Must not depend on:
 
 - bounded-context packages
 - `<lang>-platform-*`
-- `<lang>-tooling-*`
+- `tooling/*`
 
 ### `<lang>-platform-*` (external providers)
 
@@ -256,14 +270,4 @@ Must not depend on:
 
 - bounded-context packages
 - `<lang>-platform-*`
-- `<lang>-tooling-*`
-
-### `<lang>-tooling-*`
-
-May depend on:
-
-- anything within the same `<lang>` (subject to the cross-language rule in scope)
-
-Must not depend on:
-
-- (none)
+- `tooling/*`
