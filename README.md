@@ -24,4 +24,4 @@ and a web UI).
 
 ## Naming quick reference
 
-See `docs/architecture/naming.md`.
+See `docs/architecture/boundaries.md`.

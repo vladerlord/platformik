@@ -27,40 +27,39 @@ is designed to be fast for humans to scan and deterministic for tooling/agents t
 
 ### Apps
 
-`apps/<role>-<client>-<module>-<lang>`
+- `apps/<client>-<module>-<lang>`
+- `apps/bff-<client>-<module>-<lang>`
+- `apps/service-<module>-<lang>`
+- `apps/worker-<module>-<lang>`
 
-- `<role>`: `app|bff|worker|service`
-  - `app`: a client application entrypoint.
-  - `bff`: backend-for-frontend for a single client app (1:1 with `<client>` + `<module>`).
-  - `worker`: async/background processing entrypoint.
-  - `service`: deployable backend entrypoint (composition/wiring of packages).
-
-- `<client>`: `web|cli|android|ios|macos|runtime`
-  - `web`: browser client (UI). Multiple web apps per product are allowed.
+- `<client>`:
+  - `web`: browser UI entrypoint. A product may have multiple web entrypoints (e.g. microfrontends)
+    and/or a host/shell app.
   - `cli`: installable client/tool (e.g. distributed via brew) that talks to a backend.
   - `android|ios|macos`: native client apps (as applicable).
-  - `runtime`: backend-only processes (services/workers), no end-user client.
-
-- `<module>`: ownership/product area identifier (may include qualifiers, e.g. platform-host,
-  platform-template-gallery).
-- `<lang>`: non-UI runtime (services/workers)
+- `<module>`: deployable identifier (may include qualifiers), e.g. `platform-host`,
+  `platform-mf-template-gallery`.
+- `bff`: backend-for-frontend for a single client app (1:1 with `<client>` + `<module>`).
+- `worker`: async/background processing entrypoint.
+- `service`: deployable backend entrypoint (composition/wiring of packages).
 
 Apps own process lifecycle: they initialize and gracefully close `platform` and `provider` resources
 (clients, pools, connections, workers).
 
 Examples:
 
-- `apps/app-web-platform-host-ts`
-- `apps/app-web-platform-template-gallery-ts`
-- `apps/app-web-platform-workflow-viewer-ts`
-- `apps/bff-web-platform-template-gallery-ts`
-- `apps/bff-web-platform-workflow-viewer-ts`
-- `apps/service-runtime-billing-rs`
-- `apps/service-runtime-workflows-go`
-- `apps/service-runtime-templates-ts`
-- `apps/worker-runtime-workflows-ts`
-- `apps/worker-runtime-billing-rs`
-- `apps/app-cli-platform-rs`
+- `apps/web-platform-host-ts`
+- `apps/web-platform-mf-template-gallery-ts`
+- `apps/web-platform-mf-workflow-viewer-ts`
+- `apps/bff-web-platform-host-ts`
+- `apps/bff-web-platform-template-mf-gallery-ts`
+- `apps/bff-web-platform-workflow-mf-viewer-ts`
+- `apps/service-billing-rs`
+- `apps/service-workflows-go`
+- `apps/service-templates-ts`
+- `apps/worker-workflows-ts`
+- `apps/worker-billing-rs`
+- `apps/cli-platform-rs`
 - `apps/bff-cli-platform-ts`
 
 ### Packages

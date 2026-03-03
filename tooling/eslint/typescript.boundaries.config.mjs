@@ -1,19 +1,19 @@
-import tsParser from "@typescript-eslint/parser";
+import tsParser from '@typescript-eslint/parser'
 
-import boundaries from "./plugin-boundaries/index.js";
-import matrix from "./typescript.boundaries.matrix.mjs";
+import boundaries from './plugin-boundaries/index.js'
+import matrix from './typescript.boundaries.matrix.mjs'
 
 export default {
-  files: ["**/*.{ts,tsx}"],
+  files: ['**/*.{ts,tsx}'],
   languageOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    parser: tsParser
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
   },
   plugins: {
-    "platformik-boundaries": boundaries
+    'platformik-boundaries': boundaries,
   },
   rules: {
-    "platformik-boundaries/dependency-graph": ["error", { matrix }]
-  }
-};
+    'platformik-boundaries/dependency-graph': ['error', { matrix }],
+  },
+}

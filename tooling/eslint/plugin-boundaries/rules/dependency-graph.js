@@ -1,10 +1,6 @@
 import path from 'node:path'
 
-import {
-  getProjectInfo,
-  parseInternalPackageImport,
-  parsePackageDir,
-} from '../core/classify.js'
+import { getProjectInfo, parseInternalPackageImport, parsePackageDir } from '../core/classify.js'
 import { INTERNAL_SCOPE_PREFIX } from '../core/constants.js'
 import { normalizeMatrix } from '../core/matrix.js'
 import { findWorkspaceRootFromFilename, normalizePath } from '../core/path-utils.js'
@@ -36,8 +32,7 @@ export default {
       forbidden: '{{from}} must not import {{to}}: {{reason}} (see docs/architecture/boundaries.md).',
       unknownInternal:
         '{{from}} imports internal package {{to}}, but its name cannot be classified by boundaries naming rules (see docs/architecture/boundaries.md).',
-      unknownSource:
-        '{{from}} cannot be classified by boundaries naming rules (see docs/architecture/boundaries.md).',
+      unknownSource: '{{from}} cannot be classified by boundaries naming rules (see docs/architecture/boundaries.md).',
       crossPackageRelative: '{{from}} uses a cross-package relative import ({{to}}). Use @platformik/<dir> instead.',
       misconfigured: 'dependency-graph is misconfigured: {{reason}}.',
     },
@@ -86,6 +81,7 @@ export default {
             to: `@platformik/${parsedImport.dir}`,
           },
         })
+
         return
       }
 
@@ -123,6 +119,7 @@ export default {
 
       if (specifier.startsWith('.')) {
         checkRelativeImport(node, specifier)
+
         return
       }
 
@@ -139,6 +136,7 @@ export default {
             messageId: 'misconfigured',
             data: { reason: normalizedMatrixResult.reason },
           })
+
           return
         }
 

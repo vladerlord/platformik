@@ -1,6 +1,4 @@
-# Moonrepo workspace configuration (scaffolding)
-#
-# Note: tasks will become real as code appears in apps/packages.
 projects:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*/'
+  - 'packages/*/'
+  - 'tooling/*/'

@@ -28,15 +28,14 @@ async function lint({ filename, code, withMatrix = true, matrixOverride }) {
           },
         },
         rules: {
-          'platformik/dependency-graph': withMatrix
-            ? ['error', { matrix: matrixOverride ?? matrix }]
-            : 'error',
+          'platformik/dependency-graph': withMatrix ? ['error', { matrix: matrixOverride ?? matrix }] : 'error',
         },
       },
     ],
   })
 
   const [result] = await eslint.lintText(code, { filePath: filename })
+
   return result.messages
 }
 

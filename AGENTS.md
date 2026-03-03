@@ -23,16 +23,13 @@ moon run <scope>:format-fix
 moon run <scope>:validate
 ```
 
-## Naming rules (strict)
-
-See `docs/architecture/naming.md`.
-
 ## Documentation discipline
 
 - Product docs live in `docs/product/`.
 - Language-agnostic architecture docs live in `docs/architecture/`.
 - Language-specific stacks live in `docs/stacks/`.
 - Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
+- Always load `docs/architecture/boundaries.md` when writing code
 
 ## Tooling
 

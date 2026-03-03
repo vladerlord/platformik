@@ -2,22 +2,13 @@ $schema: 'https://moonrepo.dev/schemas/tasks.json'
 
 fileGroups:
   sources:
-    - glob: 'apps/**/src/**/*'
-    - glob: 'apps/**/src/tsconfig.json'
-    - glob: 'apps/**/src/package.json'
-    - glob: 'packages/**/src/**/*'
-    - glob: 'packages/**/tsconfig.json'
-    - glob: 'packages/**/package.json'
-    - file: 'package.json'
-    - file: 'tsconfig.base.json'
-    - file: 'eslint.config.mjs'
-    - file: 'prettier.config.mjs'
+    - glob: 'apps/**/*'
+    - glob: 'packages/**/*'
   tests:
     - glob: 'apps/**/test/*'
     - glob: 'packages/**/test/*'
 
 tasks:
-  # Type checking — runs tsc --noEmit for every package and app
   typecheck:
     command: 'tsc --noEmit'
     inputs:
@@ -27,7 +18,6 @@ tasks:
       cache: true
       runInCI: true
 
-  # Lint — ESLint with flat config inherited from root
   lint:
     command: 'eslint --cache --cache-location .eslintcache .'
     inputs:
@@ -45,7 +35,6 @@ tasks:
     options:
       cache: true
 
-  # Format check — Prettier (non-destructive in CI)
   format:
     command: 'prettier --check .'
     inputs:
@@ -64,7 +53,6 @@ tasks:
       cache: false
       runInCI: false
 
-  # Tests — bun test, requires docker-compose for infra
   test:
     command: 'bun test'
     inputs:
@@ -80,6 +68,3 @@ tasks:
       - lint
       - format
       - test
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'

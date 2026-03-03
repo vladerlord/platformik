@@ -1,10 +1,4 @@
-import {
-  APP_CLIENTS,
-  APP_ROLES,
-  INTERNAL_SCOPE_PREFIX,
-  LANGUAGES,
-  PACKAGE_ROLES,
-} from './constants.js'
+import { APP_CLIENTS, APP_ROLES, INTERNAL_SCOPE_PREFIX, LANGUAGES, PACKAGE_ROLES } from './constants.js'
 import { normalizePath } from './path-utils.js'
 
 export function parseAppDir(dir) {

@@ -14,5 +14,6 @@ export function findWorkspaceRootFromFilename(filename) {
   if (index !== -1 && packagesIndex !== -1) index = Math.min(index, packagesIndex)
 
   if (index === -1) return null
+
   return parts.slice(0, index).join('/')
 }
