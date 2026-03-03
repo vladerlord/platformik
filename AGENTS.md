@@ -12,6 +12,17 @@
     - Runtime: `bun add <pkg>@^X.Y.Z`
     - Dev: `bun add --dev <pkg>@^X.Y.Z`
 
+## Validation loop
+
+<scope> - the project name defined in moon.yml or package.json. Use global tasks only when
+necessary.
+
+```bash
+moon run <scope>:lint-fix
+moon run <scope>:format-fix
+moon run <scope>:validate
+```
+
 ## Naming rules (strict)
 
 See `docs/architecture/naming.md`.

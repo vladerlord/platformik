@@ -5,7 +5,7 @@ import tsParser from '@typescript-eslint/parser'
 import plugin from '../index.js'
 import matrix from '../../typescript.boundaries.matrix.mjs'
 
-async function lint({ filename, code, withMatrix = true }) {
+async function lint({ filename, code, withMatrix = true, matrixOverride }) {
   const eslint = new ESLint({
     cwd: '/',
     overrideConfigFile: true,
@@ -28,141 +28,188 @@ async function lint({ filename, code, withMatrix = true }) {
           },
         },
         rules: {
-          'platformik/dependency-graph': withMatrix ? ['error', { matrix }] : 'error',
+          'platformik/dependency-graph': withMatrix
+            ? ['error', { matrix: matrixOverride ?? matrix }]
+            : 'error',
         },
       },
     ],
   })
 
   const [result] = await eslint.lintText(code, { filePath: filename })
-
   return result.messages
 }
 
 test('reports misconfiguration when matrix missing', async () => {
   const results = await lint({
-    filename: '/repo/apps/web-platform-ts/src/main.tsx',
-    code: 'import "@platformik/ts-billing-workflows";',
+    filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+    code: 'import "@platformik/billing-workflows-ts";',
     withMatrix: false,
   })
+
   expect(results).toHaveLength(1)
-  expect(results[0].ruleId).toBe('platformik/dependency-graph')
   expect(results[0].message).toContain('misconfigured')
 })
 
-test('valid imports', async () => {
+test('reports misconfiguration when matrix key is invalid', async () => {
+  const badMatrix = {
+    ...matrix,
+    app: {
+      allow: ['shared', 'not-a-key'],
+    },
+  }
+
+  const results = await lint({
+    filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+    code: 'import "@platformik/billing-workflows-ts";',
+    matrixOverride: badMatrix,
+  })
+
+  expect(results).toHaveLength(1)
+  expect(results[0].message).toContain('misconfigured')
+})
+
+test('valid dependency flow', async () => {
   expect(
     await lint({
-      filename: '/repo/packages/ts-lib-logger/src/index.ts',
-      code: 'import "@platformik/ts-lib-strings";',
+      filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+      code: 'import "@platformik/billing-workflows-ts";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: '/repo/packages/ts-billing-domain/src/index.ts',
-      code: 'import "@platformik/ts-lib-logger";',
+      filename: '/repo/apps/bff-web-platform-py/src/main.ts',
+      code: 'import "@platformik/openai-provider-py";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: '/repo/packages/ts-billing-workflows/src/index.ts',
-      code: 'import "@platformik/ts-org-domain";',
+      filename: '/repo/packages/billing-domain-ts/src/index.ts',
+      code: 'import "@platformik/shared-fp-domain-ts";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: '/repo/packages/ts-billing-workflows/src/index.ts',
-      code: 'import "@platformik/ts-platform-openai";',
+      filename: '/repo/packages/billing-workflows-ts/src/index.ts',
+      code: 'import "@platformik/billing-domain-ts";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: '/repo/packages/ts-billing-workflows/src/index.ts',
-      code: 'import "@platformik/ts-infra-postgres";',
+      filename: '/repo/packages/billing-workflows-ts/src/index.ts',
+      code: 'import "@platformik/shared-runtime-platform-ts";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: '/repo/apps/web-platform-ts/src/main.tsx',
-      code: 'import "@platformik/ts-billing-workflows";',
+      filename: '/repo/packages/billing-infra-ts/src/index.ts',
+      code: 'import "@platformik/openai-provider-ts";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: 'C:/repo/packages/ts-lib-logger/src/index.ts',
-      code: 'import "@platformik/ts-lib-strings";',
+      filename: '/repo/packages/billing-migrations-ts/src/index.ts',
+      code: 'import "@platformik/shared-runtime-platform-ts";',
     }),
   ).toHaveLength(0)
 
   expect(
     await lint({
-      filename: '/repo/packages/ts-billing-domain/src/index.ts',
-      code: 'import "../..";',
+      filename: '/repo/packages/shared-fp-domain-ts/src/index.ts',
+      code: 'import "@platformik/shared-runtime-domain-ts";',
     }),
   ).toHaveLength(0)
 })
 
-test('invalid imports', async () => {
-  const unknown = await lint({
-    filename: '/repo/apps/web-platform-ts/src/main.tsx',
-    code: 'import "@platformik/ts-billing";',
-  })
-  expect(unknown).toHaveLength(1)
-  expect(unknown[0].ruleId).toBe('platformik/dependency-graph')
-  expect(unknown[0].message).toContain('cannot be classified')
-
+test('invalid dependency flow', async () => {
   const appToDomain = await lint({
-    filename: '/repo/apps/web-platform-ts/src/main.tsx',
-    code: 'import "@platformik/ts-billing-domain";',
+    filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+    code: 'import "@platformik/billing-domain-ts";',
   })
   expect(appToDomain).toHaveLength(1)
   expect(appToDomain[0].message).toContain('must not import')
 
-  const domainCrossContext = await lint({
-    filename: '/repo/packages/ts-billing-domain/src/index.ts',
-    code: 'import "@platformik/ts-org-domain";',
+  const domainToInfra = await lint({
+    filename: '/repo/packages/billing-domain-ts/src/index.ts',
+    code: 'import "@platformik/billing-infra-ts";',
   })
-  expect(domainCrossContext).toHaveLength(1)
-  expect(domainCrossContext[0].message).toContain('must not import')
+  expect(domainToInfra).toHaveLength(1)
+  expect(domainToInfra[0].message).toContain('must not import')
 
-  const workflowsToAdapters = await lint({
-    filename: '/repo/packages/ts-billing-workflows/src/index.ts',
-    code: 'import "@platformik/ts-billing-infra";',
+  const providerToPlatform = await lint({
+    filename: '/repo/packages/openai-provider-ts/src/index.ts',
+    code: 'import "@platformik/runtime-platform-ts";',
   })
-  expect(workflowsToAdapters).toHaveLength(1)
-  expect(workflowsToAdapters[0].message).toContain('must not import')
+  expect(providerToPlatform).toHaveLength(1)
+  expect(providerToPlatform[0].message).toContain('must not import')
 
-  const infraToPlatform = await lint({
-    filename: '/repo/packages/ts-billing-infra/src/index.ts',
-    code: 'import "@platformik/ts-platform-openai";',
+  const platformToProvider = await lint({
+    filename: '/repo/packages/runtime-platform-ts/src/index.ts',
+    code: 'import "@platformik/openai-provider-ts";',
   })
-  expect(infraToPlatform).toHaveLength(1)
-  expect(infraToPlatform[0].message).toContain('must not import')
+  expect(platformToProvider).toHaveLength(1)
+  expect(platformToProvider[0].message).toContain('must not import')
 
   const migrationsToDomain = await lint({
-    filename: '/repo/packages/ts-billing-migrations/src/index.ts',
-    code: 'import "@platformik/ts-billing-domain";',
+    filename: '/repo/packages/billing-migrations-ts/src/index.ts',
+    code: 'import "@platformik/billing-domain-ts";',
   })
   expect(migrationsToDomain).toHaveLength(1)
   expect(migrationsToDomain[0].message).toContain('must not import')
+})
 
-  const crossLang = await lint({
-    filename: '/repo/apps/web-platform-ts/src/main.tsx',
-    code: 'import "@platformik/py-billing-domain";',
+test('reports unknown source and unknown internal names', async () => {
+  const badSource = await lint({
+    filename: '/repo/apps/worker-orchestration-py/src/index.ts',
+    code: 'import "@platformik/billing-workflows-py";',
   })
-  expect(crossLang).toHaveLength(1)
-  expect(crossLang[0].message).toContain('cross-language')
+  expect(badSource).toHaveLength(1)
+  expect(badSource[0].message).toContain('cannot be classified')
 
-  const crossPkgRel = await lint({
-    filename: '/repo/apps/web-platform-ts/src/main.tsx',
-    code: 'import "../../../packages/ts-billing-domain/src/index";',
+  const badInternal = await lint({
+    filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+    code: 'import "@platformik/ts-billing-workflows";',
   })
-  expect(crossPkgRel).toHaveLength(1)
-  expect(crossPkgRel[0].message).toContain('cross-package relative import')
+  expect(badInternal).toHaveLength(1)
+  expect(badInternal[0].message).toContain('cannot be classified')
+})
+
+test('forbids cross-language imports', async () => {
+  const crossLanguage = await lint({
+    filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+    code: 'import "@platformik/billing-domain-py";',
+  })
+
+  expect(crossLanguage).toHaveLength(1)
+  expect(crossLanguage[0].message).toContain('cross-language')
+})
+
+test('forbids cross-package relative imports', async () => {
+  const result = await lint({
+    filename: '/repo/apps/app-web-platform-ts/src/main.tsx',
+    code: 'import "../../../packages/billing-domain-ts/src/index";',
+  })
+
+  expect(result).toHaveLength(1)
+  expect(result[0].message).toContain('cross-package relative import')
+})
+
+test('supports require and import() static specifiers', async () => {
+  const requireResult = await lint({
+    filename: '/repo/packages/billing-workflows-ts/src/index.ts',
+    code: 'require("@platformik/billing-domain-ts");',
+  })
+  expect(requireResult).toHaveLength(0)
+
+  const importExpressionResult = await lint({
+    filename: '/repo/packages/billing-workflows-ts/src/index.ts',
+    code: 'await import("@platformik/billing-domain-ts");',
+  })
+  expect(importExpressionResult).toHaveLength(0)
 })

@@ -1,4 +1,4 @@
-# Boundaries and Dependencies v2
+# Boundaries and Dependencies
 
 ## Purpose
 
@@ -35,14 +35,15 @@ is designed to be fast for humans to scan and deterministic for tooling/agents t
   - `worker`: async/background processing entrypoint.
   - `service`: deployable backend entrypoint (composition/wiring of packages).
 
-- `<client>`: `web|cli|android|ios|macos`
+- `<client>`: `web|cli|android|ios|macos|runtime`
   - `web`: browser client (UI). Multiple web apps per product are allowed.
   - `cli`: installable client/tool (e.g. distributed via brew) that talks to a backend.
   - `android|ios|macos`: native client apps (as applicable).
+  - `runtime`: backend-only processes (services/workers), no end-user client.
 
 - `<module>`: ownership/product area identifier (may include qualifiers, e.g. platform-host,
   platform-template-gallery).
-- `<lang>`
+- `<lang>`: non-UI runtime (services/workers)
 
 Apps own process lifecycle: they initialize and gracefully close `platform` and `provider` resources
 (clients, pools, connections, workers).
@@ -54,11 +55,11 @@ Examples:
 - `apps/app-web-platform-workflow-viewer-ts`
 - `apps/bff-web-platform-template-gallery-ts`
 - `apps/bff-web-platform-workflow-viewer-ts`
-- `apps/service-billing-rs`
-- `apps/service-workflows-go`
-- `apps/service-templates-ts`
-- `apps/worker-workflows-ts`
-- `apps/worker-billing-rs`
+- `apps/service-runtime-billing-rs`
+- `apps/service-runtime-workflows-go`
+- `apps/service-runtime-templates-ts`
+- `apps/worker-runtime-workflows-ts`
+- `apps/worker-runtime-billing-rs`
 - `apps/app-cli-platform-rs`
 - `apps/bff-cli-platform-ts`
 
