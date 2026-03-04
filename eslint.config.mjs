@@ -1,4 +1,4 @@
-import base from "./configs/eslint/base.config.mjs";
-import tsBoundaries from "./configs/eslint/typescript.boundaries.config.mjs";
+import base from './tooling/eslint/base.config.mjs'
+import tsBoundaries from './tooling/eslint/typescript.boundaries.config.mjs'
 
-export default [...base, tsBoundaries];
+export default [...base, tsBoundaries]

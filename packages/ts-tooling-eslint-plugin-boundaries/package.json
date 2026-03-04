@@ -1,8 +1,0 @@
-{
-  "name": "@platformik/ts-tooling-eslint-plugin-boundaries",
-  "private": true,
-  "type": "module",
-  "exports": {
-    ".": "./index.js"
-  }
-}

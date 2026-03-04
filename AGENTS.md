@@ -1,10 +1,5 @@
 # Agent instructions (Platformik)
 
-## Phase: scaffolding only
-
-Do **not** implement product runtime features unless explicitly asked. This phase is limited to:
-folder structure, configs, docs, and tooling setup.
-
 ## Monorepo rules
 
 - Only `apps/` are deployable (composition roots).
@@ -17,9 +12,16 @@ folder structure, configs, docs, and tooling setup.
     - Runtime: `bun add <pkg>@^X.Y.Z`
     - Dev: `bun add --dev <pkg>@^X.Y.Z`
 
-## Naming rules (strict)
+## Validation loop
 
-See `docs/architecture/naming.md`.
+<scope> - the project name defined in moon.yml or package.json. Use global tasks only when
+necessary.
+
+```bash
+moon run <scope>:lint-fix
+moon run <scope>:format-fix
+moon run <scope>:validate
+```
 
 ## Documentation discipline
 
@@ -27,6 +29,7 @@ See `docs/architecture/naming.md`.
 - Language-agnostic architecture docs live in `docs/architecture/`.
 - Language-specific stacks live in `docs/stacks/`.
 - Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
+- Always load `docs/architecture/boundaries.md` when writing code
 
 ## Tooling
 

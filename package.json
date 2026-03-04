@@ -7,12 +7,13 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@typescript-eslint/parser": "^8.56.1",
     "@eslint/js": "^10.0.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "eslint": "^10.0.0",
+    "globals": "^17.4.0",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.56.1",
-    "globals": "^17.4.0"
+    "typescript-eslint": "^8.56.1"
   },
   "scripts": {
     "lint": "eslint .",

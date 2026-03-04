@@ -2,14 +2,26 @@
 
 Libraries only. No deployables, no service wiring, no environment bootstrapping.
 
-## Naming (strict; flat)
-`packages/<lang>-<context>-<role>`
+## Naming pattern
 
-- `<lang>`: `py|ts|go|rs`
-- `<role>` (bounded-context): `domain|workflows|infra|migrations`
-- `<context>`: kebab-case token created as needed
+```
+packages/<role>-<module>-<lang>
+```
 
-Shared/group packages:
-`packages/<lang>-(lib|infra|platform|tooling)-<name>(-<subname>...)*`
+## Roles
 
-See `docs/architecture/naming.md` for full rules and examples.
+| Role | Semantics |
+|------|-----------|
+| `lib` | Pure technical utilities — zero IO, no external SDKs (fp, retries, resilience) |
+| `domain` | Pure domain model — entities, value objects, domain events; no IO |
+| `ports` | Hexagonal port interfaces — repository, service, and capability interfaces |
+| `contracts` | Wire-format schemas — zod/protobuf DTOs, integration event schemas |
+| `module` | Synchronous application services — hexagonal use cases, factory-injected |
+| `workflows` | Business flow orchestration — technology-agnostic (Temporal, BullMQ, state machines) |
+| `adapter` | Port implementations — DB repos, queue adapters, workflow activity implementations |
+| `runtime` | Infrastructure runtimes with lifecycle — Postgres pool, Redis, RabbitMQ, Temporal |
+| `vendor` | External vendor wrappers — OpenAI, Anthropic, S3, Stripe |
+| `migrations` | Domain-owned schema migrations |
+| `testkit` | Test factories, fakes, in-memory port implementations *(devDependency only)* |
+
+See `docs/architecture/boundaries.md` for full dependency rules and examples.

@@ -1,0 +1,7 @@
+$schema: 'https://moonrepo.dev/schemas/moon.json'
+type: tool
+language: typescript
+
+tasks:
+  typecheck:
+    command: 'echo "typecheck: skipped (eslint tooling has no tsconfig project)"'

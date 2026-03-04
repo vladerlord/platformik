@@ -7,3 +7,4 @@ go = "1.26.0"
 
 [env]
 _.file = [".env", ".env.local"]
+_.path = ["./node_modules/.bin"]

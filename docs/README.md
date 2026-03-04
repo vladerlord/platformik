@@ -11,8 +11,6 @@
 
 ## Architecture (language-agnostic)
 
-- `docs/architecture/monorepo.md`
-- `docs/architecture/naming.md`
 - `docs/architecture/boundaries.md`
 
 ## Tooling

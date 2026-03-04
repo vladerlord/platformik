@@ -1,7 +1,2 @@
-# Moonrepo toolchain configuration (scaffolding)
-#
-# Keep this minimal for now. As projects are added, we will wire tasks to mise-managed tools.
 node:
-  # Prefer bun for JS/TS tasks; avoid relying on system node.
-  packageManager: "bun"
-
+  packageManager: 'bun'

@@ -1,6 +1,7 @@
-# `apps/spa-web`
+# `apps/app-web-platform-ts`
 
 SvelteKit SPA for:
+
 - Template gallery
 - Wizard (agent setup + canonical memory initialization)
 - Workflow viewer/editor
@@ -8,4 +9,3 @@ SvelteKit SPA for:
 - Memory diff viewer
 
 No code yet (scaffolding phase).
-
