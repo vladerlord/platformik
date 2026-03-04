@@ -1,34 +1,53 @@
 export default {
   app: {
-    allow: ['shared', 'workflows', 'infra', 'platform', 'provider'],
-    denyReason: 'apps may depend only on shared, workflows, infra, platform, and provider packages',
+    allow: ['lib', 'domain', 'ports', 'contracts', 'module', 'workflows', 'adapter', 'runtime', 'vendor'],
+    denyReason: 'apps may only import lib, domain, ports, contracts, module, workflows, adapter, runtime, and vendor',
+  },
+  lib: {
+    allow: ['lib'],
+    denyReason: 'lib packages may only depend on other lib packages (no IO, no SDKs, no domain concepts)',
   },
   domain: {
-    allow: ['shared'],
-    denyReason: 'domain may depend only on shared packages',
+    allow: ['lib'],
+    denyReason: 'domain packages may only depend on lib (pure model: no ports, no IO, no adapters)',
+  },
+  ports: {
+    allow: ['lib', 'domain'],
+    denyReason: 'ports packages may only depend on lib and domain (interfaces reference domain entity types)',
+  },
+  contracts: {
+    allow: ['lib'],
+    denyReason: 'contracts packages may only depend on lib (wire-format schemas; no domain logic)',
+  },
+  module: {
+    allow: ['lib', 'domain', 'ports', 'contracts'],
+    denyReason:
+      'module packages may only depend on lib, domain, ports, and contracts (use factory injection for runtime/vendor)',
   },
   workflows: {
-    allow: ['shared', 'domain', 'platform', 'provider'],
-    denyReason: 'workflows may depend only on shared, domain, platform, and provider packages',
+    allow: ['lib', 'ports', 'contracts', 'runtime'],
+    denyReason:
+      'workflows packages may only depend on lib, ports, contracts, and runtime (orchestration via port interfaces)',
   },
-  infra: {
-    allow: ['shared', 'domain', 'platform', 'provider'],
-    denyReason: 'infra may depend only on shared, domain, platform, and provider packages',
+  adapter: {
+    allow: ['lib', 'domain', 'ports', 'runtime', 'vendor'],
+    denyReason: 'adapter packages may only depend on lib, domain, ports, runtime, and vendor',
   },
-  platform: {
-    allow: ['shared'],
-    denyReason: 'platform may depend only on shared packages',
+  runtime: {
+    allow: ['lib'],
+    denyReason: 'runtime packages may only depend on lib (no domain, no vendor coupling)',
   },
-  provider: {
-    allow: ['shared'],
-    denyReason: 'provider may depend only on shared packages',
+  vendor: {
+    allow: ['lib'],
+    denyReason: 'vendor packages may only depend on lib (thin wrappers; no domain, no runtime)',
   },
   migrations: {
-    allow: ['shared', 'platform'],
-    denyReason: 'migrations may depend only on shared and platform packages',
+    allow: ['lib', 'runtime'],
+    denyReason: 'migrations may only depend on lib and runtime (schema-level, independent of domain code)',
   },
-  shared: {
-    allow: ['shared'],
-    denyReason: 'shared packages may depend only on other shared packages',
+  testkit: {
+    allow: ['lib', 'domain', 'ports', 'module'],
+    denyReason:
+      'testkit packages may only depend on lib, domain, ports, and module (test factories, in-memory port implementations, module test doubles)',
   },
 }

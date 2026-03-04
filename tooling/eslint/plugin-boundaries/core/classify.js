@@ -28,22 +28,20 @@ export function parsePackageDir(dir) {
   const tokens = dir.split('-')
   if (tokens.length < 3) return null
 
+  const role = tokens[0]
   const lang = tokens[tokens.length - 1]
-  const role = tokens[tokens.length - 2]
-  const context = tokens.slice(0, -2).join('-')
+  const moduleName = tokens.slice(1, -1).join('-')
 
-  if (!LANGUAGES.has(lang)) return null
   if (!PACKAGE_ROLES.has(role)) return null
-  if (!context) return null
-
-  const isShared = context.startsWith('shared-')
+  if (!LANGUAGES.has(lang)) return null
+  if (!moduleName) return null
 
   return {
     kind: 'package',
-    context,
     role,
+    moduleName,
     lang,
-    boundaryKey: isShared ? 'shared' : role,
+    boundaryKey: role,
   }
 }
 
