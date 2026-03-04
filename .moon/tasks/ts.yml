@@ -1,63 +1,37 @@
 $schema: 'https://moonrepo.dev/schemas/tasks.json'
 
-fileGroups:
-  sources:
-    - glob: 'apps/**/*'
-    - glob: 'packages/**/*'
-  tests:
-    - glob: 'apps/**/test/*'
-    - glob: 'packages/**/test/*'
-
 tasks:
   typecheck:
     command: 'tsc --noEmit'
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'
     options:
       cache: true
       runInCI: true
 
   lint:
     command: 'eslint --cache --cache-location .eslintcache .'
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'
     options:
       cache: true
       runInCI: true
 
   lint-fix:
     command: 'eslint --cache --cache-location .eslintcache --fix .'
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'
     options:
       cache: true
 
   format:
-    command: 'prettier --check .'
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'
+    command: 'prettier --check "**/*.{ts,tsx,js,jsx,mts,cts}"'
     options:
       cache: false
       runInCI: true
 
   format-fix:
-    command: 'prettier --write .'
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'
+    command: 'prettier --write "**/*.{ts,tsx,js,jsx,mts,cts}"'
     options:
       cache: false
       runInCI: false
 
   test:
     command: 'bun test'
-    inputs:
-      - '@group(sources)'
-      - '@group(tests)'
     options:
       cache: false
       runInCI: true

@@ -1,4 +1,5 @@
 projects:
-  - 'apps/*/'
-  - 'packages/*/'
-  - 'tooling/*/'
+  globs:
+    - 'apps/*/moon.yml'
+    - 'packages/*/moon.yml'
+    - 'tooling/*/moon.yml'

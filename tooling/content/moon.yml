@@ -1,0 +1,10 @@
+id: tooling-content
+layer: tool
+language: typescript
+
+workspace:
+  inheritedTasks:
+    include:
+      - format-content
+      - format-content-fix
+      - validate-content

@@ -1,5 +1,5 @@
-id: tooling-eslint
-layer: tool
+id: bff-web-platform-ts
+layer: application
 language: typescript
 
 workspace:
@@ -12,9 +12,3 @@ workspace:
       - format-fix
       - test
       - validate
-
-tasks:
-  typecheck:
-    command: 'echo "typecheck: skipped (eslint tooling has no tsconfig project)"'
-    options:
-      mergeArgs: replace

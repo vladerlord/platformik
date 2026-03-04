@@ -1,6 +1,6 @@
-id: tooling-eslint
-layer: tool
+id: lib-logger-ts
 language: typescript
+layer: library
 
 workspace:
   inheritedTasks:
@@ -12,9 +12,3 @@ workspace:
       - format-fix
       - test
       - validate
-
-tasks:
-  typecheck:
-    command: 'echo "typecheck: skipped (eslint tooling has no tsconfig project)"'
-    options:
-      mergeArgs: replace

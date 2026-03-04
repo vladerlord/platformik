@@ -1,4 +1,4 @@
-# `apps/app-web-platform-ts`
+# `apps/bff-web-platform-ts`
 
 SvelteKit SPA for:
 

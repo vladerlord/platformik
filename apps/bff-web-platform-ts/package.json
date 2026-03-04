@@ -1,0 +1,13 @@
+{
+  "name": "@platformik/bff-web-platform-ts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@platformik/runtime-fastify-ts": "workspace:*",
+    "@platformik/runtime-pg-ts": "workspace:*",
+    "@platformik/runtime-pino-ts": "workspace:*",
+    "kysely": "^0.28.11",
+    "zod": "^4.3.6"
+  }
+}

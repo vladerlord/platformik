@@ -1,0 +1,14 @@
+{
+  "name": "@platformik/runtime-fastify-ts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@platformik/lib-logger-ts": "workspace:*",
+    "fastify": "^5.7.4",
+    "fastify-type-provider-zod": "^6.1.0"
+  }
+}

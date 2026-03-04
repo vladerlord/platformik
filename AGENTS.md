@@ -20,6 +20,7 @@ necessary.
 ```bash
 moon run <scope>:lint-fix
 moon run <scope>:format-fix
+moon run <scope>:format-content-fix
 moon run <scope>:validate
 ```
 
