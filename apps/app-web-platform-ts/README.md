@@ -1,6 +1,7 @@
-# `apps/web-platform-ts`
+# `apps/app-web-platform-ts`
 
 SvelteKit SPA for:
+
 - Template gallery
 - Wizard (agent setup + canonical memory initialization)
 - Workflow viewer/editor
