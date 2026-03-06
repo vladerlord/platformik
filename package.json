@@ -2,6 +2,16 @@
   "name": "platformik",
   "private": true,
   "type": "module",
+  "catalog": {
+    "fastify": "^5.7.4",
+    "fastify-type-provider-zod": "^6.1.0",
+    "kysely": "^0.28.11",
+    "pg": "^8.18.0",
+    "@types/pg": "^8.18.0",
+    "pino": "^10.3.1",
+    "yaml": "^2.7.0",
+    "zod": "^4.3.6"
+  },
   "workspaces": [
     "apps/*",
     "packages/*",

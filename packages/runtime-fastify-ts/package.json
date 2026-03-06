@@ -8,7 +8,7 @@
   "types": "./src/index.ts",
   "dependencies": {
     "@platformik/lib-logger-ts": "workspace:*",
-    "fastify": "^5.7.4",
-    "fastify-type-provider-zod": "^6.1.0"
+    "fastify": "catalog:",
+    "fastify-type-provider-zod": "catalog:"
   }
 }

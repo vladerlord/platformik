@@ -22,8 +22,8 @@
         "@platformik/runtime-fastify-ts": "workspace:*",
         "@platformik/runtime-pg-ts": "workspace:*",
         "@platformik/runtime-pino-ts": "workspace:*",
-        "kysely": "^0.28.11",
-        "zod": "^4.3.6",
+        "kysely": "catalog:",
+        "zod": "catalog:",
       },
     },
     "packages/lib-logger-ts": {
@@ -35,19 +35,19 @@
       "version": "0.0.1",
       "dependencies": {
         "@platformik/lib-logger-ts": "workspace:*",
-        "fastify": "^5.7.4",
-        "fastify-type-provider-zod": "^6.1.0",
+        "fastify": "catalog:",
+        "fastify-type-provider-zod": "catalog:",
       },
     },
     "packages/runtime-pg-ts": {
       "name": "@platformik/runtime-pg-ts",
       "version": "0.0.1",
       "dependencies": {
-        "kysely": "^0.28.0",
-        "pg": "^8.18.0",
+        "kysely": "catalog:",
+        "pg": "catalog:",
       },
       "devDependencies": {
-        "@types/pg": "^8.18.0",
+        "@types/pg": "catalog:",
       },
     },
     "packages/runtime-pino-ts": {
@@ -55,7 +55,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@platformik/lib-logger-ts": "workspace:*",
-        "pino": "^10.3.1",
+        "pino": "catalog:",
       },
     },
     "tooling/content": {
@@ -65,12 +65,22 @@
       "name": "@platformik/dep-policy",
       "version": "0.0.1",
       "dependencies": {
-        "yaml": "^2.7.0",
+        "yaml": "catalog:",
       },
     },
     "tooling/eslint": {
       "name": "@platformik/tooling-eslint",
     },
+  },
+  "catalog": {
+    "@types/pg": "^8.18.0",
+    "fastify": "^5.7.4",
+    "fastify-type-provider-zod": "^6.1.0",
+    "kysely": "^0.28.11",
+    "pg": "^8.18.0",
+    "pino": "^10.3.1",
+    "yaml": "^2.7.0",
+    "zod": "^4.3.6",
   },
   "packages": {
     "@eslint-community/eslint-utils": ["@eslint-community/eslint-utils@4.9.1", "", { "dependencies": { "eslint-visitor-keys": "^3.4.3" }, "peerDependencies": { "eslint": "^6.0.0 || ^7.0.0 || >=8.0.0" } }, "sha512-phrYmNiYppR7znFEdqgfWHXR6NCkZEK7hwWDHZUjit/2/U0r6XvkDl0SYnoM51Hq7FhCGdLDT6zxCCOY1hexsQ=="],

@@ -8,6 +8,6 @@
   "types": "./src/index.ts",
   "dependencies": {
     "@platformik/lib-logger-ts": "workspace:*",
-    "pino": "^10.3.1"
+    "pino": "catalog:"
   }
 }
