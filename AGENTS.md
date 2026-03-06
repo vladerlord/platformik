@@ -14,8 +14,8 @@
 
 ## Validation loop
 
-After making changes, always run the fix + validate loop for affected projects. `<scope>` is the
-project `id` from its `moon.yml`.
+After making changes, always run the fix + validate loop for affected projects. `<scope>` is the project `id` from its
+`moon.yml`.
 
 ```bash
 moon run <scope>:fix          # lint-fix + format-fix
@@ -35,7 +35,7 @@ moon run tooling-content:validate
 - Language-agnostic architecture docs live in `docs/architecture/`.
 - Language-specific stacks live in `docs/stacks/`.
 - Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
-- Always load `docs/architecture/boundaries.md` when writing code
+- Before scaffolding anything new (app, package, config, tooling), **read `docs/architecture/boundaries.md` first**.
 
 ## Tooling
 

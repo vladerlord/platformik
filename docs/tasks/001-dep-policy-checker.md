@@ -2,42 +2,39 @@
 
 ## Context
 
-We maintain a polyglot monorepo with strict architectural boundaries defined in `boundaries.md` at
-the repo root. Package naming follows a deterministic convention:
+We maintain a polyglot monorepo with strict architectural boundaries defined in `boundaries.md` at the repo root.
+Package naming follows a deterministic convention:
 
 - `apps/<client>-<module>-<lang>` (and `bff-*`, `service-*`, `worker-*` variants)
 - `packages/<role>-<module>-<lang>`
 
-Where `<role>` is one of: `lib`, `domain`, `ports`, `contracts`, `module`, `workflows`, `adapter`,
-`runtime`, `vendor`, `migrations`, `testkit`.
+Where `<role>` is one of: `lib`, `domain`, `ports`, `contracts`, `module`, `workflows`, `adapter`, `runtime`, `vendor`,
+`migrations`, `testkit`.
 
 We already enforce **source-level import boundaries** between roles via an ESLint plugin
-(`tooling/eslint/plugin-boundaries`). However, we have no enforcement over **which external
-(third-party) packages** a given role is allowed to install. For example, nothing prevents
-`domain-billing-ts` from declaring `pino` in its `package.json`, which would violate `boundaries.md`
-("no external dependencies").
+(`tooling/eslint/plugin-boundaries`). However, we have no enforcement over **which external (third-party) packages** a
+given role is allowed to install. For example, nothing prevents `domain-billing-ts` from declaring `pino` in its
+`package.json`, which would violate `boundaries.md` ("no external dependencies").
 
 This tool closes that gap.
 
 ## Important: `boundaries.md` is the source of truth
 
-Read `boundaries.md` before implementing. The policy rules below are a **direct translation** of the
-role descriptions in that document. If you see any conflict between this task and `boundaries.md`,
-`boundaries.md` wins.
+Read `boundaries.md` before implementing. The policy rules below are a **direct translation** of the role descriptions
+in that document. If you see any conflict between this task and `boundaries.md`, `boundaries.md` wins.
 
 ## Goal
 
-Create a standalone CLI tool at `tooling/dep-policy/` that validates external dependency
-declarations across all workspace packages against a role-based policy defined in YAML.
+Create a standalone CLI tool at `tooling/dep-policy/` that validates external dependency declarations across all
+workspace packages against a role-based policy defined in YAML.
 
 The tool must:
 
 1. Parse the policy config (`policy.yaml`).
 2. Discover all workspace packages under `apps/` and `packages/`.
 3. Classify each package by role and language using its directory name.
-4. Read the package manifest (e.g. `package.json` for TypeScript) and extract declared external
-   dependencies.
-5. Filter out internal monorepo packages (anything under `@mono/` scope).
+4. Read the package manifest (e.g. `package.json` for TypeScript) and extract declared external dependencies.
+5. Filter out internal monorepo packages (anything under `@platformik/` scope).
 6. Validate external dependencies against the policy rules for that role + language.
 7. Report violations with clear, actionable error messages.
 8. Exit with code 1 if any violations are found.
@@ -55,8 +52,7 @@ The tool must:
 
 Directory name: `packages/<role>-<module>-<lang>`
 
-Extract via regex or split: first segment = role, last segment = lang, everything in between =
-module.
+Extract via regex or split: first segment = role, last segment = lang, everything in between = module.
 
 Examples:
 
@@ -85,7 +81,7 @@ The policy config lives at `tooling/dep-policy/policy.yaml`.
 # tooling/dep-policy/policy.yaml
 
 # Monorepo package scope — used to filter out internal dependencies
-monorepoScope: '@mono'
+monorepoScope: '@platformik'
 
 rules:
   # --- boundaries.md: "zero IO, no external SDK dependencies" ---
@@ -169,8 +165,8 @@ rules:
 | `deny`      | Listed packages are forbidden. Everything else passes.     |
 | `allow_any` | No restrictions on external dependencies.                  |
 
-The `packages` field in `allow` and `deny` modes is keyed by language code (`ts`, `rs`, `go`, `py`,
-`kt`, `sw`). If a language is not listed, the default behavior depends on the mode:
+The `packages` field in `allow` and `deny` modes is keyed by language code (`ts`, `rs`, `go`, `py`, `kt`, `sw`). If a
+language is not listed, the default behavior depends on the mode:
 
 - `allow` mode + language not listed → no external deps allowed for that language.
 - `deny` mode + language not listed → no deps blocked for that language.
@@ -236,8 +232,7 @@ tooling/dep-policy/
 - Scans `apps/` and `packages/` directories.
 - Classifies each directory name into `{ role, module, lang, path }`.
   - `apps/*` → role is always `app`, lang is last hyphen-separated token.
-  - `packages/<role>-<module>-<lang>` → extract role (first token), module (middle tokens), lang
-    (last token).
+  - `packages/<role>-<module>-<lang>` → extract role (first token), module (middle tokens), lang (last token).
 - Skips directories that don't match the naming convention (with a warning to stderr).
 
 ### `parsers/*.ts`
@@ -249,8 +244,8 @@ tooling/dep-policy/
     parse(packageDir: string): string[]
   }
   ```
-- `typescript.ts`: reads `package.json`, extracts keys from `dependencies` and `peerDependencies`
-  (not `devDependencies`).
+- `typescript.ts`: reads `package.json`, extracts keys from `dependencies` and `peerDependencies` (not
+  `devDependencies`).
 - `rust.ts`: reads `Cargo.toml`, extracts `[dependencies]` keys (skip `[dev-dependencies]`).
 - `go.ts`: reads `go.mod`, extracts `require` block entries.
 - `python.ts`: reads `pyproject.toml`, extracts `project.dependencies`.
@@ -259,12 +254,7 @@ tooling/dep-policy/
 
 - Core pure function:
   ```ts
-  function validate(
-    deps: string[],
-    rule: PolicyRule,
-    lang: string,
-    monorepoScope: string,
-  ): Violation[]
+  function validate(deps: string[], rule: PolicyRule, lang: string, monorepoScope: string): Violation[]
   ```
 - Filters out monorepo-scoped packages before checking.
 - Applies the correct mode logic (`deny_all`, `allow`, `deny`, `allow_any`).
@@ -309,11 +299,10 @@ Run with `bun test`. No test runner config file needed — `bun test` auto-disco
 
 - **`config.test.ts`**: valid config parses correctly; missing fields throw; unknown modes throw.
 - **`discovery.test.ts`**: classifies `packages/domain-billing-ts` →
-  `{ role: 'domain', module: 'billing', lang: 'ts' }`; classifies `apps/service-billing-ts` →
-  `{ role: 'app', ... }`; classifies `apps/bff-web-platform-host-ts` →
-  `{ role: 'app', lang: 'ts' }`; skips malformed directory names.
-- **`parsers/typescript.test.ts`**: extracts `dependencies` + `peerDependencies`; ignores
-  `devDependencies`; handles missing fields gracefully.
+  `{ role: 'domain', module: 'billing', lang: 'ts' }`; classifies `apps/service-billing-ts` → `{ role: 'app', ... }`;
+  classifies `apps/bff-web-platform-host-ts` → `{ role: 'app', lang: 'ts' }`; skips malformed directory names.
+- **`parsers/typescript.test.ts`**: extracts `dependencies` + `peerDependencies`; ignores `devDependencies`; handles
+  missing fields gracefully.
 - **`parsers/rust.test.ts`**: extracts from `[dependencies]`; ignores `[dev-dependencies]`.
 - **`parsers/go.test.ts`**: extracts from `require (...)` block.
 - **`parsers/python.test.ts`**: extracts from `[project] dependencies`.
@@ -328,9 +317,8 @@ Run with `bun test`. No test runner config file needed — `bun test` auto-disco
 
 ### Integration Test
 
-- **`integration.test.ts`**: uses the `__fixtures__/` directory as a fake monorepo root. Runs the
-  full pipeline with a test policy config. Asserts correct violations for known-bad fixtures and
-  clean passes for known-good fixtures.
+- **`integration.test.ts`**: uses the `__fixtures__/` directory as a fake monorepo root. Runs the full pipeline with a
+  test policy config. Asserts correct violations for known-bad fixtures and clean passes for known-good fixtures.
 
 ## Fixture Definitions
 
@@ -339,33 +327,33 @@ Use these for testing. Some are intentionally invalid to trigger violations:
 **`packages/lib-fp-ts/package.json`** — clean (no external deps):
 
 ```json
-{ "name": "@mono/lib-fp-ts", "dependencies": {} }
+{ "name": "@platformik/lib-fp-ts", "dependencies": {} }
 ```
 
 **`packages/domain-billing-ts/package.json`** — violation (has `pino`):
 
 ```json
 {
-  "name": "@mono/domain-billing-ts",
-  "dependencies": { "@mono/lib-fp-ts": "workspace:*", "pino": "^9.0.0" }
+  "name": "@platformik/domain-billing-ts",
+  "dependencies": { "@platformik/lib-fp-ts": "workspace:*", "pino": "^9.0.0" }
 }
 ```
 
 **`packages/contracts-billing-ts/package.json`** — clean (only `zod`, which is allowed):
 
 ```json
-{ "name": "@mono/contracts-billing-ts", "dependencies": { "zod": "catalog:" } }
+{ "name": "@platformik/contracts-billing-ts", "dependencies": { "zod": "catalog:" } }
 ```
 
 **`packages/module-billing-ts/package.json`** — violation (has `pg`, which is forbidden):
 
 ```json
 {
-  "name": "@mono/module-billing-ts",
+  "name": "@platformik/module-billing-ts",
   "dependencies": {
-    "@mono/lib-fp-ts": "workspace:*",
-    "@mono/domain-billing-ts": "workspace:*",
-    "@mono/ports-billing-ts": "workspace:*",
+    "@platformik/lib-fp-ts": "workspace:*",
+    "@platformik/domain-billing-ts": "workspace:*",
+    "@platformik/ports-billing-ts": "workspace:*",
     "pg": "^8.0.0"
   }
 }
@@ -374,7 +362,10 @@ Use these for testing. Some are intentionally invalid to trigger violations:
 **`packages/runtime-postgres-ts/package.json`** — clean (runtime allows anything):
 
 ```json
-{ "name": "@mono/runtime-postgres-ts", "dependencies": { "pg": "^8.0.0", "pg-pool": "^3.0.0" } }
+{
+  "name": "@platformik/runtime-postgres-ts",
+  "dependencies": { "pg": "^8.0.0", "pg-pool": "^3.0.0" }
+}
 ```
 
 **`packages/adapter-billing-rs/Cargo.toml`** — clean (adapter allows anything):
@@ -392,10 +383,10 @@ serde = { version = "1.0", features = ["derive"] }
 
 ```json
 {
-  "name": "@mono/service-billing-ts",
+  "name": "@platformik/service-billing-ts",
   "dependencies": {
-    "@mono/module-billing-ts": "workspace:*",
-    "@mono/runtime-postgres-ts": "workspace:*",
+    "@platformik/module-billing-ts": "workspace:*",
+    "@platformik/runtime-postgres-ts": "workspace:*",
     "fastify": "catalog:",
     "pino": "catalog:"
   }
@@ -429,7 +420,7 @@ Add to root `package.json` scripts:
 
 - Keep total implementation under ~500 lines (excluding tests and fixtures).
 - Each module should be independently testable — no side effects at import time.
-- All functions that do IO (reading files, scanning dirs) should accept the root path as a
-  parameter, never use hardcoded paths.
+- All functions that do IO (reading files, scanning dirs) should accept the root path as a parameter, never use
+  hardcoded paths.
 - Parsers should handle missing manifest files gracefully (warn and skip, don't crash).
 - Use explicit TypeScript types — no `any`.

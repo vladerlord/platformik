@@ -13,7 +13,9 @@ tasks:
   lint:
     command: 'eslint .'
     inputs:
-      - '**/*.{ts,tsx,js,jsx,mts,cts}'
+      - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - '/tooling/eslint/base.config.mjs'
+      - '/eslint.config.mjs'
     options:
       cache: true
       runInCI: true
@@ -21,22 +23,24 @@ tasks:
   lint-fix:
     command: 'eslint --fix .'
     inputs:
-      - '**/*.{ts,tsx,js,jsx,mts,cts}'
+      - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
     options:
       cache: false
 
   format:
-    command: 'prettier --check "**/*.{ts,tsx,js,jsx,mts,cts}"'
+    command: 'prettier --check "**/*.{ts,tsx,js,jsx,mts,cts,svelte}"'
     inputs:
-      - '**/*.{ts,tsx,js,jsx,mts,cts}'
+      - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - '/prettier.config.mjs'
+      - '/.prettierignore'
     options:
       cache: true
       runInCI: true
 
   format-fix:
-    command: 'prettier --write "**/*.{ts,tsx,js,jsx,mts,cts}"'
+    command: 'prettier --write "**/*.{ts,tsx,js,jsx,mts,cts,svelte}"'
     inputs:
-      - '**/*.{ts,tsx,js,jsx,mts,cts}'
+      - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
     options:
       cache: false
       runInCI: false

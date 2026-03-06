@@ -2,12 +2,12 @@
 
 ## Context
 
-This plan supersedes parts of `001-dep-policy-checker.md`. The monorepo architecture has been
-restructured from 12 package roles to 6. Read `boundaries.md` first — it is the source of truth. If
-anything in this plan conflicts with `boundaries.md`, `boundaries.md` wins.
+This plan supersedes parts of `001-dep-policy-checker.md`. The monorepo architecture has been restructured from 12
+package roles to 6. Read `boundaries.md` first — it is the source of truth. If anything in this plan conflicts with
+`boundaries.md`, `boundaries.md` wins.
 
-The tool structure from 001 (config → discovery → parsers → validator → reporter → CLI) remains
-valid. This plan describes **only the changes**.
+The tool structure from 001 (config → discovery → parsers → validator → reporter → CLI) remains valid. This plan
+describes **only the changes**.
 
 ## What changed in the architecture
 
@@ -15,8 +15,8 @@ valid. This plan describes **only the changes**.
 
 Old roles removed: `domain`, `ports`, `adapter`, `workflows`, `migrations`, `testkit`.
 
-These are now **internal concerns** of `module` packages — they may exist as directories inside a
-module but are not separate packages.
+These are now **internal concerns** of `module` packages — they may exist as directories inside a module but are not
+separate packages.
 
 New role set:
 
@@ -36,8 +36,8 @@ Old: `packages/<role>-<module>-<lang>`
 New: `packages/<role>-<n>-<lang|schema>`
 
 - `<module>` placeholder renamed to `<n>` to avoid collision with `module` role.
-- `<lang|schema>` — a package ends with either a language code (`ts`, `py`, `rs`, `go`, `kt`, `sw`)
-  or a schema code (`proto`, `jsonschema`).
+- `<lang|schema>` — a package ends with either a language code (`ts`, `py`, `rs`, `go`, `kt`, `sw`) or a schema code
+  (`proto`, `jsonschema`).
 
 ### Dependency flow
 
@@ -152,17 +152,14 @@ The last hyphen-separated token of the directory name is always `<lang|schema>`.
 For packages:
 
 - `packages/module-iam-ts` → `{ role: 'module', name: 'iam', suffix: 'ts', kind: 'lang' }`
-- `packages/contracts-ai-proto` →
-  `{ role: 'contracts', name: 'ai', suffix: 'proto', kind: 'schema' }`
+- `packages/contracts-ai-proto` → `{ role: 'contracts', name: 'ai', suffix: 'proto', kind: 'schema' }`
 
 For apps (unchanged logic, always `<lang>`):
 
 - `apps/service-api-ts` → `{ role: 'app', name: 'api', suffix: 'ts', kind: 'lang' }`
-- `apps/bff-web-platform-ts` →
-  `{ role: 'app', name: 'bff-web-platform', suffix: 'ts', kind: 'lang' }`
+- `apps/bff-web-platform-ts` → `{ role: 'app', name: 'bff-web-platform', suffix: 'ts', kind: 'lang' }`
 
-Schema packages (`kind: 'schema'`) should be **skipped** during validation — they have no runtime
-dependencies to check.
+Schema packages (`kind: 'schema'`) should be **skipped** during validation — they have no runtime dependencies to check.
 
 ### 3. Update `config.ts`
 
@@ -193,12 +190,11 @@ to:
 
 ### 4. Update `validator.ts`
 
-No logic changes needed — the four modes (`deny_all`, `allow`, `deny`, `allow_any`) still work. But
-`deny` and `deny_all` modes are no longer used in the default config. Keep support for them — they
-may be useful later.
+No logic changes needed — the four modes (`deny_all`, `allow`, `deny`, `allow_any`) still work. But `deny` and
+`deny_all` modes are no longer used in the default config. Keep support for them — they may be useful later.
 
-Add dependency flow validation as a new check: verify that packages only depend on internal monorepo
-packages of allowed roles per the dependency flow matrix:
+Add dependency flow validation as a new check: verify that packages only depend on internal monorepo packages of allowed
+roles per the dependency flow matrix:
 
 ```ts
 const DEPENDENCY_FLOW: Record<string, string[]> = {
@@ -211,17 +207,16 @@ const DEPENDENCY_FLOW: Record<string, string[]> = {
 }
 ```
 
-For each package, check that its internal (monorepo-scoped) dependencies only reference packages
-whose role is in the allowed list. For example, if `module-iam-ts` depends on
-`@platformik/module-billing-ts`, that's a violation — `module` cannot depend on `module`.
+For each package, check that its internal (monorepo-scoped) dependencies only reference packages whose role is in the
+allowed list. For example, if `module-iam-ts` depends on `@platformik/module-billing-ts`, that's a violation — `module`
+cannot depend on `module`.
 
 This means the validator now checks **two things**:
 
 1. External dependency policy (existing) — which third-party packages are allowed.
 2. Internal dependency flow (new) — which monorepo package roles can be depended on.
 
-To resolve the role of an internal dependency, use the same classification logic from
-`discovery.ts`.
+To resolve the role of an internal dependency, use the same classification logic from `discovery.ts`.
 
 ### 5. Update `reporter.ts`
 
@@ -324,13 +319,12 @@ Updated fixture set:
 ### 7. Update tests
 
 - **`config.test.ts`**: update valid roles list.
-- **`discovery.test.ts`**: add tests for `<schema>` suffix classification; verify schema packages
-  are identified correctly; update existing tests for `<n>` naming.
-- **`validator.test.ts`**: add tests for dependency flow validation (module → module = violation,
-  module → lib = ok, contracts → runtime = violation, etc.); update external dep tests for new
-  policy (lib is now `allow` not `deny_all`).
-- **`integration.test.ts`**: update fixtures, verify both external and internal dependency
-  violations are caught in one pass.
+- **`discovery.test.ts`**: add tests for `<schema>` suffix classification; verify schema packages are identified
+  correctly; update existing tests for `<n>` naming.
+- **`validator.test.ts`**: add tests for dependency flow validation (module → module = violation, module → lib = ok,
+  contracts → runtime = violation, etc.); update external dep tests for new policy (lib is now `allow` not `deny_all`).
+- **`integration.test.ts`**: update fixtures, verify both external and internal dependency violations are caught in one
+  pass.
 
 ## Summary of file changes
 

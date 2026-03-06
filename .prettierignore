@@ -1,2 +1,6 @@
 **/.DS_Store
 configs/python/**
+
+# Generated / build output
+**/.svelte-kit/**
+**/build/**

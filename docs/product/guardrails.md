@@ -8,8 +8,7 @@
 ## Schema-bound control and memory
 
 - Any LLM output that affects control-flow or memory must be strict schema-bound JSON.
-- `AgenticIf` is constrained to a small enum + confidence; low confidence falls back to safe static
-  branch.
+- `AgenticIf` is constrained to a small enum + confidence; low confidence falls back to safe static branch.
 
 ## Canonical memory safety
 

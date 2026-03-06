@@ -1,5 +1,9 @@
 monorepoScope: '@platformik'
 
+langs: [ts, py, go, rs, kt, sw]
+schemas: [proto, jsonschema]
+packageRoles: [lib, domain, ports, contracts, module, workflows, adapter, runtime, vendor, migrations, testkit]
+
 rules:
   lib:
     mode: allow

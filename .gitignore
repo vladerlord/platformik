@@ -1,6 +1,5 @@
 .DS_Store
 .idea/
-.vscode/
 
 # Python
 __pycache__/
@@ -17,6 +16,9 @@ node_modules/
 .turbo/
 dist/
 build/
+
+# SvelteKit generated
+.svelte-kit/
 
 # Moon
 .moon/cache/

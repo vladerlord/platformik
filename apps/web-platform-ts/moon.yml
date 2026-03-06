@@ -1,0 +1,37 @@
+id: web-platform-ts
+language: typescript
+layer: application
+
+tasks:
+  typecheck:
+    command: 'svelte-check'
+    args: '--tsconfig tsconfig.json'
+    inputs:
+      - 'src/**/*.{ts,svelte}'
+      - 'tsconfig.json'
+      - 'svelte.config.js'
+      - '/configs/typescript/tsconfig.svelte.json'
+    options:
+      cache: true
+      runInCI: true
+      mergeArgs: replace
+
+  dev:
+    command: 'vite dev'
+    options:
+      cache: false
+      runInCI: false
+      persistent: true
+
+  build:
+    command: 'vite build'
+    inputs:
+      - 'src/**'
+      - 'static/**'
+      - 'tsconfig.json'
+      - 'svelte.config.js'
+      - 'vite.config.ts'
+      - '/configs/typescript/tsconfig.svelte.json'
+    options:
+      cache: true
+      runInCI: true

@@ -17,6 +17,9 @@ function withTempConfig(content: string, fn: (path: string) => void): void {
 
 const VALID_CONFIG = `
 monorepoScope: '@platformik'
+langs: [ts, py, go, rs, kt, sw]
+schemas: [proto, jsonschema]
+packageRoles: [lib, module, contracts, runtime, vendor]
 rules:
   lib:
     mode: allow
@@ -41,6 +44,9 @@ describe('loadConfig', () => {
     withTempConfig(VALID_CONFIG, (path) => {
       const config = loadConfig(path)
       expect(config.monorepoScope).toBe('@platformik')
+      expect(config.langs).toContain('ts')
+      expect(config.schemas).toContain('proto')
+      expect(config.packageRoles).toContain('lib')
       expect(config.rules['lib']).toEqual({ mode: 'allow', packages: { ts: ['neverthrow'] } })
       expect(config.rules['contracts']).toEqual({
         mode: 'allow',
@@ -57,7 +63,12 @@ describe('loadConfig', () => {
   })
 
   test('throws if rules is missing', () => {
-    const yaml = `monorepoScope: '@platformik'`
+    const yaml = `
+monorepoScope: '@platformik'
+langs: [ts]
+schemas: [proto]
+packageRoles: [lib]
+`
     withTempConfig(yaml, (path) => {
       expect(() => loadConfig(path)).toThrow('rules')
     })

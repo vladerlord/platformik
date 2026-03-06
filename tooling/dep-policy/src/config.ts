@@ -11,12 +11,21 @@ export type PolicyRule =
 
 export interface PolicyConfig {
   monorepoScope: string
+  langs: string[]
+  schemas: string[]
+  packageRoles: string[]
   rules: Record<string, PolicyRule>
 }
 
 const VALID_MODES: RuleMode[] = ['deny_all', 'allow', 'deny', 'allow_any']
 
-const REQUIRED_ROLES = ['lib', 'module', 'contracts', 'runtime', 'vendor', 'app']
+function parseStringArray(value: unknown, field: string): string[] {
+  if (!Array.isArray(value) || !value.every((v) => typeof v === 'string')) {
+    throw new Error(`policy.yaml: "${field}" must be an array of strings`)
+  }
+
+  return value as string[]
+}
 
 export function loadConfig(configPath: string): PolicyConfig {
   const raw = readFileSync(configPath, 'utf8')
@@ -26,13 +35,18 @@ export function loadConfig(configPath: string): PolicyConfig {
     throw new Error('policy.yaml: missing or invalid "monorepoScope"')
   }
 
+  const langs = parseStringArray(parsed['langs'], 'langs')
+  const schemas = parseStringArray(parsed['schemas'], 'schemas')
+  const packageRoles = parseStringArray(parsed['packageRoles'], 'packageRoles')
+
   if (!parsed['rules'] || typeof parsed['rules'] !== 'object' || Array.isArray(parsed['rules'])) {
     throw new Error('policy.yaml: missing or invalid "rules"')
   }
 
   const rules = parsed['rules'] as Record<string, unknown>
 
-  for (const role of REQUIRED_ROLES) {
+  // Validate every packageRole + the implicit 'app' role (for apps/ directories) has a rule
+  for (const role of [...packageRoles, 'app']) {
     if (!rules[role]) {
       throw new Error(`policy.yaml: missing rule for role "${role}"`)
     }
@@ -40,7 +54,7 @@ export function loadConfig(configPath: string): PolicyConfig {
 
   for (const [role, rule] of Object.entries(rules)) {
     if (!rule || typeof rule !== 'object' || Array.isArray(rule)) {
-      throw new Error(`policy.yaml: rule for role "${role}" must be an object`)
+      throw new Error(`policy.yaml: rule for "${role}" must be an object`)
     }
     const r = rule as Record<string, unknown>
     if (!VALID_MODES.includes(r['mode'] as RuleMode)) {
@@ -57,6 +71,9 @@ export function loadConfig(configPath: string): PolicyConfig {
 
   return {
     monorepoScope: parsed['monorepoScope'],
+    langs,
+    schemas,
+    packageRoles,
     rules: rules as Record<string, PolicyRule>,
   }
 }
