@@ -61,8 +61,9 @@ function listDirs(dir: string): string[] {
   return readdirSync(dir).filter((name) => {
     try {
       return statSync(join(dir, name)).isDirectory()
-    } catch {
-      return false
+    } catch (err) {
+      if (err instanceof Error && (err as NodeJS.ErrnoException).code === 'ENOENT') return false
+      throw err
     }
   })
 }
