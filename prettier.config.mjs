@@ -5,11 +5,15 @@ export default {
   trailingComma: 'all',
   printWidth: 120,
   tabWidth: 2,
-  plugins: [],
+  plugins: ['prettier-plugin-svelte'],
   overrides: [
     {
+      files: '*.svelte',
+      options: { parser: 'svelte' },
+    },
+    {
       files: '*.md',
-      options: { printWidth: 100, proseWrap: 'always' },
+      options: { printWidth: 120, proseWrap: 'always' },
     },
   ],
 }

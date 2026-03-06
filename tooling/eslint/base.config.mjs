@@ -1,12 +1,21 @@
 import js from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
+import svelte from 'eslint-plugin-svelte'
 import { defineConfig } from 'eslint/config'
 import moduleBoundaries from './plugin-module-boundaries.js'
 
 export default defineConfig(
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/.moon/**', '**/bun.lockb', 'tooling/eslint/plugin-module-boundaries.js'],
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/build/**',
+      '**/.svelte-kit/**',
+      '**/.moon/**',
+      '**/bun.lockb',
+      'tooling/eslint/plugin-module-boundaries.js',
+    ],
   },
   {
     languageOptions: {
@@ -15,6 +24,27 @@ export default defineConfig(
   },
   js.configs.recommended,
   tseslint.configs.recommended,
+  svelte.configs['flat/recommended'],
+  svelte.configs['flat/prettier'],
+  {
+    files: ['**/*.svelte'],
+    languageOptions: {
+      parserOptions: {
+        // Pass the TypeScript parser so <script lang="ts"> is type-aware
+        parser: tseslint.parser,
+      },
+    },
+    rules: {
+      // TypeScript handles undefined checks inside <script lang="ts"> — no-undef sees DOM
+      // types (MouseEvent, etc.) as unknown globals, so we defer to tsc instead.
+      'no-undef': 'off',
+      // Only relevant when paths.base is configured in svelte.config.js; not needed here.
+      'svelte/no-navigation-without-resolve': 'off',
+      // Prettier enforces printWidth for code structure but cannot break string literals
+      // (e.g. long Tailwind class= attributes). max-len catches those cases.
+      'max-len': ['error', { code: 120, ignoreUrls: true, ignoreComments: true }],
+    },
+  },
   {
     plugins: {
       'module-boundaries': moduleBoundaries,

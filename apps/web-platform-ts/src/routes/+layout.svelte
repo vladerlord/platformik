@@ -1,8 +1,11 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte'
   import '../app.css'
-  import { LayoutDashboard, Settings, Users } from 'lucide-svelte'
+  import LayoutDashboard from 'lucide-svelte/icons/layout-dashboard'
+  import Users from 'lucide-svelte/icons/users'
+  import Settings from 'lucide-svelte/icons/settings'
 
-  let { children }: { children: import('svelte').Snippet } = $props()
+  let { children }: { children: Snippet } = $props()
 
   const navItems = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -21,10 +24,22 @@
 
     <!-- Nav -->
     <nav class="flex-1 space-y-1 p-4">
-      {#each navItems as item}
+      {#each navItems as item (item.href)}
         <a
           href={item.href}
-          class="flex items-center gap-3 rounded-[var(--radius)] px-3 py-2 text-sm text-[var(--color-muted-foreground)] transition-colors hover:bg-[var(--color-secondary)] hover:text-[var(--color-foreground)]"
+          class="
+            flex
+            items-center
+            gap-3
+            rounded-[var(--radius)]
+            px-3
+            py-2
+            text-sm
+            text-[var(--color-muted-foreground)]
+            transition-colors
+            hover:bg-[var(--color-secondary)]
+            hover:text-[var(--color-foreground)]
+          "
         >
           <item.icon size={18} />
           {item.label}

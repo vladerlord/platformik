@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte'
   import { type VariantProps, cva } from 'class-variance-authority'
   import { cn } from '$lib/utils.js'
 
@@ -11,8 +12,7 @@
             'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] hover:bg-[var(--color-primary)]/90',
           secondary:
             'bg-[var(--color-secondary)] text-[var(--color-secondary-foreground)] hover:bg-[var(--color-secondary)]/80',
-          outline:
-            'border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-secondary)]',
+          outline: 'border border-[var(--color-border)] bg-transparent hover:bg-[var(--color-secondary)]',
           ghost: 'hover:bg-[var(--color-secondary)] hover:text-[var(--color-secondary-foreground)]',
           destructive: 'bg-red-500 text-white hover:bg-red-500/90',
         },
@@ -47,14 +47,9 @@
     type = 'button',
     onclick,
     children,
-  }: Props & { children?: import('svelte').Snippet } = $props()
+  }: Props & { children?: Snippet } = $props()
 </script>
 
-<button
-  {type}
-  {disabled}
-  {onclick}
-  class={cn(buttonVariants({ variant, size }), className)}
->
+<button {type} {disabled} {onclick} class={cn(buttonVariants({ variant, size }), className)}>
   {@render children?.()}
 </button>

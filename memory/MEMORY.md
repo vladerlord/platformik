@@ -12,15 +12,12 @@
 | `runtime`   | Instantiable infrastructure runtimes (Postgres, Redis, RabbitMQ, etc.)                       |
 | `vendor`    | Wrappers/clients for external vendors (OpenAI, Stripe, S3, etc.)                             |
 
-<<<<<<< HEAD App prefixes: `apps/web-<name>-<lang>`, `apps/bff-<client>-<name>-<lang>`,
-`apps/service-<name>-<lang>`, `apps/worker-<name>-<lang>` ======= App naming (from
-`docs/architecture/boundaries.md`):
+App naming (from `docs/architecture/boundaries.md`):
 
 - `apps/<client>-<name>-<lang>` e.g. `apps/web-platform-ts` (browser SPA)
 - `apps/bff-<client>-<name>-<lang>` e.g. `apps/bff-web-platform-ts`
 - `apps/service-<name>-<lang>`, `apps/worker-<name>-<lang>`
 - `<client>`: `web` | `cli` | `android` | `ios` | `macos`
-  > > > > > > > 89a1b79 (init web platform microfrontends)
 
 ## Key Design Decisions
 
@@ -67,8 +64,9 @@ Any boundary change requires updating in ONE changeset:
 - Pin `vite` to `^6.4.1` — federation plugin breaks with Vite 7's stricter ESM loading
 - Set `shared: {}` (empty) until remotes are configured — `shared: ['svelte']` causes SSR build
   failures in SvelteKit because it transforms all svelte imports through federation virtual modules
-- SvelteKit app `tsconfig.json` must extend `.svelte-kit/tsconfig.json` (generated) and explicitly
-  set `"skipLibCheck": true` (bun-types conflicts with vite types)
+- SvelteKit app `tsconfig.json` uses TS5 array extends:
+  `[".svelte-kit/tsconfig.json", "../../configs/typescript/tsconfig.svelte.json"]` — `.svelte-kit`
+  provides lib/DOM/paths; `tsconfig.svelte.json` provides strictness + skipLibCheck
 - `svelte-check` is the typecheck tool (not `tsc`) — override the moon task
 - Run `bunx svelte-kit sync` before `svelte-check` to generate `.svelte-kit/tsconfig.json`
 

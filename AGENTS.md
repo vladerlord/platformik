@@ -35,7 +35,8 @@ moon run tooling-content:validate
 - Language-agnostic architecture docs live in `docs/architecture/`.
 - Language-specific stacks live in `docs/stacks/`.
 - Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
-- Always load `docs/architecture/boundaries.md` when writing code
+- Before scaffolding anything new (app, package, config, tooling), **read
+  `docs/architecture/boundaries.md` first**.
 
 ## Tooling
 

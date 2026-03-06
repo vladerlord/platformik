@@ -4,13 +4,15 @@ layer: application
 
 tasks:
   typecheck:
-    command: 'svelte-check --tsconfig tsconfig.json'
+    command: 'svelte-check'
+    args: '--tsconfig tsconfig.json'
     inputs:
       - 'src/**/*.{ts,svelte}'
       - 'tsconfig.json'
     options:
       cache: true
       runInCI: true
+      mergeArgs: replace
 
   dev:
     command: 'vite dev'
