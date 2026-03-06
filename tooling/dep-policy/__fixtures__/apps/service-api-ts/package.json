@@ -1,0 +1,12 @@
+{
+  "name": "@platformik/service-api-ts",
+  "dependencies": {
+    "@platformik/module-iam-ts": "workspace:*",
+    "@platformik/module-chat-ts": "workspace:*",
+    "@platformik/contracts-platform-api-ts": "workspace:*",
+    "@platformik/runtime-postgres-ts": "workspace:*",
+    "@platformik/runtime-fastify-ts": "workspace:*",
+    "fastify": "catalog:",
+    "pino": "catalog:"
+  }
+}

@@ -14,13 +14,19 @@
 
 ## Validation loop
 
-<scope> - the project name defined in moon.yml or package.json. Use global tasks only when
-necessary.
+After making changes, always run the fix + validate loop for affected projects. `<scope>` is the
+project `id` from its `moon.yml`.
 
 ```bash
-moon run <scope>:lint-fix
-moon run <scope>:format-fix
-moon run <scope>:validate
+moon run <scope>:fix          # lint-fix + format-fix
+moon run <scope>:validate     # typecheck + lint + format + test
+```
+
+For content files (md, yml, yaml, json) changed anywhere in the repo:
+
+```bash
+moon run tooling-content:format-fix
+moon run tooling-content:validate
 ```
 
 ## Documentation discipline

@@ -1,0 +1,3 @@
+id: lib-logger-ts
+language: typescript
+layer: library

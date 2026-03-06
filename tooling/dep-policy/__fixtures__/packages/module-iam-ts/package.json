@@ -1,0 +1,9 @@
+{
+  "name": "@platformik/module-iam-ts",
+  "dependencies": {
+    "@platformik/lib-fp-ts": "workspace:*",
+    "@platformik/runtime-postgres-ts": "workspace:*",
+    "zod": "catalog:",
+    "pg": "catalog:"
+  }
+}

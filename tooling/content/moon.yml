@@ -1,0 +1,37 @@
+# This project only formats non-code content files (md, yml, yaml, json, jsonc).
+# Exclude all inherited TS tasks — only local tasks apply.
+id: tooling-content
+layer: tool
+
+workspace:
+  inheritedTasks:
+    include: []
+
+tasks:
+  format:
+    command: 'prettier --check "**/*.{md,yml,yaml,json,jsonc}"'
+    inputs:
+      - '**/*.{md,yml,yaml,json,jsonc}'
+    options:
+      cache: true
+      runInCI: true
+      runFromWorkspaceRoot: true
+
+  format-fix:
+    command: 'prettier --write "**/*.{md,yml,yaml,json,jsonc}"'
+    inputs:
+      - '**/*.{md,yml,yaml,json,jsonc}'
+    options:
+      cache: false
+      runInCI: false
+      runFromWorkspaceRoot: true
+
+  fix:
+    deps:
+      - format-fix
+    options:
+      runInCI: false
+
+  validate:
+    deps:
+      - format

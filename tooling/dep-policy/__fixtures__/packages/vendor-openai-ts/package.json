@@ -1,0 +1,6 @@
+{
+  "name": "@platformik/vendor-openai-ts",
+  "dependencies": {
+    "openai": "catalog:"
+  }
+}

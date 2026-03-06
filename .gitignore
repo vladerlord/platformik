@@ -31,6 +31,10 @@ tmp/
 .env
 .env.local
 .env.*.local
+.mise.local.toml
 
 # Eslint
 .eslintcache
+
+# Moon build artifacts
+tooling/eslint/plugin-module-boundaries.js

@@ -1,0 +1,6 @@
+{
+  "name": "@platformik/contracts-platform-api-ts",
+  "dependencies": {
+    "zod": "catalog:"
+  }
+}
