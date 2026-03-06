@@ -39,7 +39,7 @@ function main(): void {
   const { root, config: configPath } = parseArgs(process.argv.slice(2))
 
   const policy = loadConfig(configPath)
-  const packages = discoverPackages(root)
+  const packages = discoverPackages(root, policy)
 
   const results: PackageViolations[] = []
 

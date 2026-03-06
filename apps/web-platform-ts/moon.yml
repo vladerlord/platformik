@@ -9,6 +9,8 @@ tasks:
     inputs:
       - 'src/**/*.{ts,svelte}'
       - 'tsconfig.json'
+      - 'svelte.config.js'
+      - '/configs/typescript/tsconfig.svelte.json'
     options:
       cache: true
       runInCI: true
@@ -26,8 +28,10 @@ tasks:
     inputs:
       - 'src/**'
       - 'static/**'
+      - 'tsconfig.json'
       - 'svelte.config.js'
       - 'vite.config.ts'
+      - '/configs/typescript/tsconfig.svelte.json'
     options:
       cache: true
       runInCI: true

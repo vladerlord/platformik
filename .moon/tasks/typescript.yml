@@ -14,6 +14,8 @@ tasks:
     command: 'eslint .'
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - '/tooling/eslint/base.config.mjs'
+      - '/eslint.config.mjs'
     options:
       cache: true
       runInCI: true
@@ -29,6 +31,8 @@ tasks:
     command: 'prettier --check "**/*.{ts,tsx,js,jsx,mts,cts,svelte}"'
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - '/prettier.config.mjs'
+      - '/.prettierignore'
     options:
       cache: true
       runInCI: true

@@ -1,6 +1,6 @@
 import { createPinoLogger } from '@platformik/runtime-pino-ts'
 import { createFastifyServer } from '@platformik/runtime-fastify-ts'
-import type { FastifyInstance } from 'fastify'
+import type { FastifyInstance } from '@platformik/runtime-fastify-ts'
 import type { Logger } from '@platformik/lib-logger-ts'
 
 export type AppContainer = {

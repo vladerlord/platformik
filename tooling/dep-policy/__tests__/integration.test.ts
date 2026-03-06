@@ -15,7 +15,7 @@ const PARSERS: Record<string, { parse(dir: string): string[] }> = {
 
 function runPipeline(): PackageViolations[] {
   const policy = loadConfig(FIXTURES_POLICY)
-  const packages = discoverPackages(FIXTURES_ROOT)
+  const packages = discoverPackages(FIXTURES_ROOT, policy)
   const results: PackageViolations[] = []
 
   for (const pkg of packages) {

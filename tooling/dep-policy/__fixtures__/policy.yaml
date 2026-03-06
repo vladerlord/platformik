@@ -1,12 +1,28 @@
 monorepoScope: '@platformik'
 
+langs: [ts, py, go, rs, kt, sw]
+schemas: [proto, jsonschema]
+packageRoles: [lib, domain, ports, contracts, module, workflows, adapter, runtime, vendor, migrations, testkit]
+
 rules:
   lib:
     mode: allow
     packages:
       ts: [neverthrow]
 
+  domain:
+    mode: allow_any
+
+  ports:
+    mode: allow_any
+
   module:
+    mode: allow_any
+
+  workflows:
+    mode: allow_any
+
+  adapter:
     mode: allow_any
 
   contracts:
@@ -21,6 +37,12 @@ rules:
     mode: allow_any
 
   vendor:
+    mode: allow_any
+
+  migrations:
+    mode: allow_any
+
+  testkit:
     mode: allow_any
 
   app:
