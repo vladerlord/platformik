@@ -1,0 +1,9 @@
+{
+  "name": "@platformik/dep-policy",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "yaml": "^2.7.0"
+  }
+}

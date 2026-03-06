@@ -1,0 +1,27 @@
+monorepoScope: '@platformik'
+
+rules:
+  lib:
+    mode: allow
+    packages:
+      ts: [neverthrow]
+
+  module:
+    mode: allow_any
+
+  contracts:
+    mode: allow
+    packages:
+      ts: [zod]
+      rs: [serde, prost]
+      go: [google.golang.org/protobuf]
+      py: [pydantic]
+
+  runtime:
+    mode: allow_any
+
+  vendor:
+    mode: allow_any
+
+  app:
+    mode: allow_any

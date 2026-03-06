@@ -1,0 +1,14 @@
+id: tooling-dep-policy
+layer: tool
+language: typescript
+
+workspace:
+  inheritedTasks:
+    include:
+      - typecheck
+      - lint
+      - lint-fix
+      - format
+      - format-fix
+      - test
+      - validate
