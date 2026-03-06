@@ -9,7 +9,7 @@ workspace:
 
 tasks:
   format:
-    command: 'prettier --check "**/*.{md,yml,yaml,json,jsonc}"'
+    command: 'mise x -- prettier --check "**/*.{md,yml,yaml,json,jsonc}"'
     inputs:
       - '**/*.{md,yml,yaml,json,jsonc}'
     options:
@@ -18,7 +18,7 @@ tasks:
       runFromWorkspaceRoot: true
 
   format-fix:
-    command: 'prettier --write "**/*.{md,yml,yaml,json,jsonc}"'
+    command: 'mise x -- prettier --write "**/*.{md,yml,yaml,json,jsonc}"'
     inputs:
       - '**/*.{md,yml,yaml,json,jsonc}'
     options:

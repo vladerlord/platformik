@@ -2,7 +2,8 @@ monorepoScope: '@platformik'
 
 langs: [ts, py, go, rs, kt, sw]
 schemas: [proto, jsonschema]
-packageRoles: [lib, domain, ports, contracts, module, workflows, adapter, runtime, vendor, migrations, testkit]
+packageRoles:
+  [lib, domain, ports, contracts, module, workflows, adapter, runtime, vendor, migrations, testkit]
 
 rules:
   lib:
@@ -28,7 +29,7 @@ rules:
   contracts:
     mode: allow
     packages:
-      ts: [zod]
+      ts: [zod, '@bufbuild/protobuf']
       rs: [serde, prost]
       go: [google.golang.org/protobuf]
       py: [pydantic]

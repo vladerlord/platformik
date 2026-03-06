@@ -4,9 +4,9 @@
 
 Read `boundaries.md` first — it is the source of truth.
 
-Previously, `tooling/eslint/plugin-boundaries` enforced dependency flow between roles. That concern has moved to
-`tooling/dep-policy/`. ESLint now has a single responsibility: **protecting module boundaries at the import statement
-level**.
+Previously, `tooling/eslint/plugin-boundaries` enforced dependency flow between roles. That concern has moved
+to `tooling/dep-policy/`. ESLint now has a single responsibility: **protecting module boundaries at the import
+statement level**.
 
 Two rules, one goal: no code can reach into another package's internals.
 
@@ -100,8 +100,8 @@ Prevents relative imports that escape the current package boundary.
 ### Logic
 
 1. Visit every `ImportDeclaration` and `ImportExpression` with a relative source (`./` or `../`).
-2. Determine the **package root** of the importing file: the closest parent directory containing a `package.json`. Cache
-   this per-file — walk up once and store.
+2. Determine the **package root** of the importing file: the closest parent directory containing a
+   `package.json`. Cache this per-file — walk up once and store.
 3. Resolve the import path relative to the importing file's directory.
 4. If the resolved path is outside the package root → report violation.
 
@@ -112,8 +112,8 @@ No need to actually read `package.json` or resolve real file paths at lint time.
 1. Count how many directories up `../` goes from the current file.
 2. If it exits the package root directory → violation.
 
-To find the package root at rule creation time, walk up from the current file's directory until a `package.json` is
-found. ESLint provides the filename via context.
+To find the package root at rule creation time, walk up from the current file's directory until a
+`package.json` is found. ESLint provides the filename via context.
 
 ```ts
 function findPackageRoot(filePath: string): string {

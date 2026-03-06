@@ -92,6 +92,11 @@ describe('validate — dependency flow', () => {
     expect(validate(deps, rule, 'ts', SCOPE, 'module')).toEqual([])
   })
 
+  test('module → contracts is allowed', () => {
+    const deps = ['@platformik/contracts-auth-ts']
+    expect(validate(deps, rule, 'ts', SCOPE, 'module')).toEqual([])
+  })
+
   test('module → vendor is allowed', () => {
     const deps = ['@platformik/vendor-openai-ts']
     expect(validate(deps, rule, 'ts', SCOPE, 'module')).toEqual([])

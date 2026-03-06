@@ -4,10 +4,17 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@fastify/cors": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@platformik/contracts-auth-ts": "workspace:*",
+    "@platformik/module-iam-ts": "workspace:*",
     "@platformik/runtime-fastify-ts": "workspace:*",
     "@platformik/runtime-pg-ts": "workspace:*",
     "@platformik/runtime-pino-ts": "workspace:*",
+    "fastify": "catalog:",
     "kysely": "catalog:",
+    "neverthrow": "^8.2.0",
+    "ts-pattern": "^5.9.0",
     "zod": "catalog:"
   }
 }

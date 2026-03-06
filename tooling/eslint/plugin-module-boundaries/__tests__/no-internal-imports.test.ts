@@ -23,7 +23,7 @@ async function lint(code: string, filename = DEFAULT_FILENAME) {
         rules: {
           'module-boundaries/no-internal-imports': [
             'error',
-            { monorepoScope: '@platformik', allowedSubpaths: ['contracts'] },
+            { monorepoScope: '@platformik', allowedSubpaths: ['contracts', 'migrations'] },
           ],
         },
       },
@@ -43,6 +43,10 @@ test('allows bare module import', async () => {
 
 test('allows contracts subpath', async () => {
   expect(await lint("import type { User } from '@platformik/module-iam-ts/contracts'")).toHaveLength(0)
+})
+
+test('allows migrations subpath', async () => {
+  expect(await lint("import { iamMigrations } from '@platformik/module-iam-ts/migrations'")).toHaveLength(0)
 })
 
 test('allows non-module packages (lib, runtime, vendor)', async () => {
@@ -75,6 +79,10 @@ test('allows dynamic import of bare module', async () => {
 
 test('allows dynamic import of contracts', async () => {
   expect(await lint("const m = await import('@platformik/module-iam-ts/contracts')")).toHaveLength(0)
+})
+
+test('allows dynamic import of migrations', async () => {
+  expect(await lint("const m = await import('@platformik/module-iam-ts/migrations')")).toHaveLength(0)
 })
 
 // --- invalid cases ---

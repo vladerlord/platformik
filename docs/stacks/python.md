@@ -8,7 +8,6 @@
 
 ## Naming
 
-- Python packages are `packages/py-*`
 - Importable module name should be: `platformik_<dir_name_underscored>`
 
 ## Composition root

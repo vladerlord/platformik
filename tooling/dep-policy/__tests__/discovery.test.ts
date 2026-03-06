@@ -25,7 +25,12 @@ describe('classifyPackage', () => {
   })
 
   test('classifies lib-fp-ts', () => {
-    expect(classifyPackage('lib-fp-ts', TEST_VOCAB)).toEqual({ role: 'lib', name: 'fp', suffix: 'ts', kind: 'lang' })
+    expect(classifyPackage('lib-fp-ts', TEST_VOCAB)).toEqual({
+      role: 'lib',
+      name: 'fp',
+      suffix: 'ts',
+      kind: 'lang',
+    })
   })
 
   test('classifies runtime-postgres-ts', () => {
