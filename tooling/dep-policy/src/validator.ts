@@ -20,6 +20,7 @@ function getRoleFromInternalDep(depName: string, monorepoScope: string): string 
   const pkgDirName = depName.slice(prefix.length)
   const tokens = pkgDirName.split('-')
   if (tokens.length < 3) return null
+
   return tokens[0] ?? null
 }
 

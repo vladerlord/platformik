@@ -1,1 +1,4 @@
-{ "name": "@platformik/lib-logger-ts", "dependencies": {} }
+{
+  "name": "@platformik/lib-logger-ts",
+  "dependencies": {}
+}

@@ -1,14 +1,3 @@
 id: runtime-pg-ts
 language: typescript
 layer: library
-
-workspace:
-  inheritedTasks:
-    include:
-      - typecheck
-      - lint
-      - lint-fix
-      - format
-      - format-fix
-      - test
-      - validate

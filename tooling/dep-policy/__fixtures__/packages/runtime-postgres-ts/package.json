@@ -1,1 +1,7 @@
-{ "name": "@platformik/runtime-postgres-ts", "dependencies": { "pg": "catalog:", "pg-pool": "catalog:" } }
+{
+  "name": "@platformik/runtime-postgres-ts",
+  "dependencies": {
+    "pg": "catalog:",
+    "pg-pool": "catalog:"
+  }
+}

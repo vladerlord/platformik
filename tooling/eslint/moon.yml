@@ -1,20 +1,31 @@
 id: tooling-eslint
-layer: tool
 language: typescript
-
-workspace:
-  inheritedTasks:
-    include:
-      - typecheck
-      - lint
-      - lint-fix
-      - format
-      - format-fix
-      - test
-      - validate
+layer: tool
 
 tasks:
-  typecheck:
-    command: 'echo "typecheck: skipped (eslint tooling has no tsconfig project)"'
+  build:
+    command: 'bun build plugin-module-boundaries/index.ts --outfile plugin-module-boundaries.js --target node'
+    inputs:
+      - 'plugin-module-boundaries/**/*.ts'
+    outputs:
+      - 'plugin-module-boundaries.js'
+
+  lint:
+    deps:
+      - build
     options:
-      mergeArgs: replace
+      mergeArgs: append
+      mergeDeps: append
+
+  lint-fix:
+    deps:
+      - build
+    options:
+      mergeArgs: append
+      mergeDeps: append
+
+  test:
+    deps:
+      - build
+    options:
+      mergeDeps: append

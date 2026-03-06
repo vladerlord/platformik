@@ -4,7 +4,8 @@
   "type": "module",
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "tooling/*"
   ],
   "devDependencies": {
     "@eslint/js": "^10.0.1",

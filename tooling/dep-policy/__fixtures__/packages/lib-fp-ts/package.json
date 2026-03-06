@@ -1,1 +1,6 @@
-{ "name": "@platformik/lib-fp-ts", "dependencies": { "neverthrow": "^8.0.0" } }
+{
+  "name": "@platformik/lib-fp-ts",
+  "dependencies": {
+    "neverthrow": "^8.0.0"
+  }
+}

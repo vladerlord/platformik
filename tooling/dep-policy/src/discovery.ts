@@ -29,9 +29,7 @@ export function classifyPackage(
   return null
 }
 
-export function classifyApp(
-  dirName: string,
-): { role: string; name: string; suffix: string; kind: 'lang' } | null {
+export function classifyApp(dirName: string): { role: string; name: string; suffix: string; kind: 'lang' } | null {
   const tokens = dirName.split('-')
   if (tokens.length < 2) return null
   const suffix = tokens[tokens.length - 1]
@@ -73,9 +71,7 @@ export function discoverPackages(root: string): PackageInfo[] {
   for (const dirName of listDirs(join(root, 'apps'))) {
     const classified = classifyApp(dirName)
     if (!classified) {
-      process.stderr.write(
-        `[dep-policy] skipping apps/${dirName}: does not match <anything>-<lang> pattern\n`,
-      )
+      process.stderr.write(`[dep-policy] skipping apps/${dirName}: does not match <anything>-<lang> pattern\n`)
       continue
     }
     results.push({ ...classified, dirName, path: join(root, 'apps', dirName) })

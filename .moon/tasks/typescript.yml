@@ -3,29 +3,40 @@ $schema: 'https://moonrepo.dev/schemas/tasks.json'
 tasks:
   typecheck:
     command: 'tsc --noEmit'
+    inputs:
+      - '**/*.{ts,tsx,mts,cts}'
+      - 'tsconfig.json'
     options:
       cache: true
       runInCI: true
 
   lint:
-    command: 'eslint --cache --cache-location .eslintcache .'
+    command: 'eslint .'
+    inputs:
+      - '**/*.{ts,tsx,js,jsx,mts,cts}'
     options:
       cache: true
       runInCI: true
 
   lint-fix:
-    command: 'eslint --cache --cache-location .eslintcache --fix .'
+    command: 'eslint --fix .'
+    inputs:
+      - '**/*.{ts,tsx,js,jsx,mts,cts}'
     options:
-      cache: true
+      cache: false
 
   format:
     command: 'prettier --check "**/*.{ts,tsx,js,jsx,mts,cts}"'
+    inputs:
+      - '**/*.{ts,tsx,js,jsx,mts,cts}'
     options:
-      cache: false
+      cache: true
       runInCI: true
 
   format-fix:
     command: 'prettier --write "**/*.{ts,tsx,js,jsx,mts,cts}"'
+    inputs:
+      - '**/*.{ts,tsx,js,jsx,mts,cts}'
     options:
       cache: false
       runInCI: false
@@ -35,6 +46,13 @@ tasks:
     options:
       cache: false
       runInCI: true
+
+  fix:
+    deps:
+      - lint-fix
+      - format-fix
+    options:
+      runInCI: false
 
   validate:
     deps:

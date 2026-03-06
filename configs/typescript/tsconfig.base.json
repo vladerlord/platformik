@@ -16,6 +16,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "exactOptionalPropertyTypes": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   }
 }
