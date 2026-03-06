@@ -1,6 +1,8 @@
 import { describe, test, expect } from 'bun:test'
 import { classifyPackage, classifyApp, discoverPackages } from '../src/discovery.ts'
+import { mkdtempSync, mkdirSync, rmSync } from 'fs'
 import { join } from 'path'
+import { tmpdir } from 'os'
 
 const FIXTURES_ROOT = join(import.meta.dir, '../__fixtures__')
 
@@ -64,6 +66,10 @@ describe('classifyPackage', () => {
 
   test('returns null for unknown suffix', () => {
     expect(classifyPackage('lib-fp-java')).toBeNull()
+  })
+
+  test('returns null for invalid package role', () => {
+    expect(classifyPackage('app-foo-ts')).toBeNull()
   })
 })
 
@@ -142,5 +148,16 @@ describe('discoverPackages', () => {
     expect(proto?.role).toBe('contracts')
     expect(proto?.suffix).toBe('proto')
     expect(proto?.kind).toBe('schema')
+  })
+
+  test('throws when packages directory cannot be read', () => {
+    const root = mkdtempSync(join(tmpdir(), 'dep-policy-discovery-test-'))
+    mkdirSync(join(root, 'apps'))
+
+    try {
+      expect(() => discoverPackages(root)).toThrow()
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
   })
 })

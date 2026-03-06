@@ -3,6 +3,19 @@ import { join } from 'path'
 
 const VALID_LANGS = new Set(['ts', 'py', 'go', 'rs', 'kt', 'sw'])
 const VALID_SCHEMAS = new Set(['proto', 'jsonschema'])
+const VALID_PACKAGE_ROLES = new Set([
+  'lib',
+  'domain',
+  'ports',
+  'contracts',
+  'module',
+  'workflows',
+  'adapter',
+  'runtime',
+  'vendor',
+  'migrations',
+  'testkit',
+])
 
 export interface PackageInfo {
   role: string
@@ -22,6 +35,7 @@ export function classifyPackage(
   const suffix = tokens[tokens.length - 1]
   const name = tokens.slice(1, -1).join('-')
   if (!role || !suffix || !name) return null
+  if (!VALID_PACKAGE_ROLES.has(role)) return null
 
   if (VALID_LANGS.has(suffix)) return { role, name, suffix, kind: 'lang' }
   if (VALID_SCHEMAS.has(suffix)) return { role, name, suffix, kind: 'schema' }
@@ -41,17 +55,13 @@ export function classifyApp(dirName: string): { role: string; name: string; suff
 }
 
 function listDirs(dir: string): string[] {
-  try {
-    return readdirSync(dir).filter((name) => {
-      try {
-        return statSync(join(dir, name)).isDirectory()
-      } catch {
-        return false
-      }
-    })
-  } catch {
-    return []
-  }
+  return readdirSync(dir).filter((name) => {
+    try {
+      return statSync(join(dir, name)).isDirectory()
+    } catch {
+      return false
+    }
+  })
 }
 
 export function discoverPackages(root: string): PackageInfo[] {

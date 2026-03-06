@@ -137,7 +137,7 @@ Everything else inside `src/` is internal implementation and must not be importe
 `<schema>` packages are inputs to codegen tooling. Generated artifacts are committed to the
 repository and land in `<lang>` packages. CI verifies generated code is up to date:
 
-```
+```text
 packages/contracts-ai-proto/             → source .proto files
     ↓ tooling/codegen-proto
 packages/contracts-ai-ts/src/generated/  → generated TS gRPC client types

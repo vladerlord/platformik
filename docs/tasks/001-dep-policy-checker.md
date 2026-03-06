@@ -37,7 +37,7 @@ The tool must:
 3. Classify each package by role and language using its directory name.
 4. Read the package manifest (e.g. `package.json` for TypeScript) and extract declared external
    dependencies.
-5. Filter out internal monorepo packages (anything under `@mono/` scope).
+5. Filter out internal monorepo packages (anything under `@platformik/` scope).
 6. Validate external dependencies against the policy rules for that role + language.
 7. Report violations with clear, actionable error messages.
 8. Exit with code 1 if any violations are found.
@@ -85,7 +85,7 @@ The policy config lives at `tooling/dep-policy/policy.yaml`.
 # tooling/dep-policy/policy.yaml
 
 # Monorepo package scope — used to filter out internal dependencies
-monorepoScope: '@mono'
+monorepoScope: '@platformik'
 
 rules:
   # --- boundaries.md: "zero IO, no external SDK dependencies" ---
@@ -339,33 +339,33 @@ Use these for testing. Some are intentionally invalid to trigger violations:
 **`packages/lib-fp-ts/package.json`** — clean (no external deps):
 
 ```json
-{ "name": "@mono/lib-fp-ts", "dependencies": {} }
+{ "name": "@platformik/lib-fp-ts", "dependencies": {} }
 ```
 
 **`packages/domain-billing-ts/package.json`** — violation (has `pino`):
 
 ```json
 {
-  "name": "@mono/domain-billing-ts",
-  "dependencies": { "@mono/lib-fp-ts": "workspace:*", "pino": "^9.0.0" }
+  "name": "@platformik/domain-billing-ts",
+  "dependencies": { "@platformik/lib-fp-ts": "workspace:*", "pino": "^9.0.0" }
 }
 ```
 
 **`packages/contracts-billing-ts/package.json`** — clean (only `zod`, which is allowed):
 
 ```json
-{ "name": "@mono/contracts-billing-ts", "dependencies": { "zod": "catalog:" } }
+{ "name": "@platformik/contracts-billing-ts", "dependencies": { "zod": "catalog:" } }
 ```
 
 **`packages/module-billing-ts/package.json`** — violation (has `pg`, which is forbidden):
 
 ```json
 {
-  "name": "@mono/module-billing-ts",
+  "name": "@platformik/module-billing-ts",
   "dependencies": {
-    "@mono/lib-fp-ts": "workspace:*",
-    "@mono/domain-billing-ts": "workspace:*",
-    "@mono/ports-billing-ts": "workspace:*",
+    "@platformik/lib-fp-ts": "workspace:*",
+    "@platformik/domain-billing-ts": "workspace:*",
+    "@platformik/ports-billing-ts": "workspace:*",
     "pg": "^8.0.0"
   }
 }
@@ -374,7 +374,10 @@ Use these for testing. Some are intentionally invalid to trigger violations:
 **`packages/runtime-postgres-ts/package.json`** — clean (runtime allows anything):
 
 ```json
-{ "name": "@mono/runtime-postgres-ts", "dependencies": { "pg": "^8.0.0", "pg-pool": "^3.0.0" } }
+{
+  "name": "@platformik/runtime-postgres-ts",
+  "dependencies": { "pg": "^8.0.0", "pg-pool": "^3.0.0" }
+}
 ```
 
 **`packages/adapter-billing-rs/Cargo.toml`** — clean (adapter allows anything):
@@ -392,10 +395,10 @@ serde = { version = "1.0", features = ["derive"] }
 
 ```json
 {
-  "name": "@mono/service-billing-ts",
+  "name": "@platformik/service-billing-ts",
   "dependencies": {
-    "@mono/module-billing-ts": "workspace:*",
-    "@mono/runtime-postgres-ts": "workspace:*",
+    "@platformik/module-billing-ts": "workspace:*",
+    "@platformik/runtime-postgres-ts": "workspace:*",
     "fastify": "catalog:",
     "pino": "catalog:"
   }

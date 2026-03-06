@@ -1,0 +1,4 @@
+[mcp_servers.github]
+url = "https://api.githubcopilot.com/mcp/insiders"
+enabled = true
+bearer_token_env_var = "GITHUB_PERSONAL_ACCESS_TOKEN"
