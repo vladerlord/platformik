@@ -23,7 +23,7 @@ const rule: Rule.RuleModule = {
   create(context) {
     const opts = context.options[0] as Options | undefined
     const monorepoScope = opts?.monorepoScope ?? '@platformik'
-    const allowedSubpaths = opts?.allowedSubpaths ?? ['contracts']
+    const allowedSubpaths = opts?.allowedSubpaths ?? ['contracts', 'migrations']
     const modulePrefix = `${monorepoScope}/module-`
 
     const filename: string = context.filename
@@ -46,9 +46,14 @@ const rule: Rule.RuleModule = {
 
       if (allowedSubpaths.includes(subpath)) return
 
+      const allowedImports = [
+        pkgName,
+        ...allowedSubpaths.map((allowedSubpath) => `${pkgName}/${allowedSubpath}`),
+      ]
+
       context.report({
         node,
-        message: `Importing internal path "${source}" is not allowed. Use "${pkgName}" or "${pkgName}/contracts" instead.`,
+        message: `Importing internal path "${source}" is not allowed. Use one of: ${allowedImports.join(', ')}.`,
       })
     }
 

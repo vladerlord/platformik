@@ -1,0 +1,7 @@
+info:
+  name: ai-providers
+  type: folder
+  seq: 2
+
+request:
+  auth: inherit

@@ -86,7 +86,9 @@ export function discoverPackages(root: string, config: PolicyConfig): PackageInf
   for (const dirName of listDirs(join(root, 'apps'))) {
     const classified = classifyApp(dirName, vocab)
     if (!classified) {
-      process.stderr.write(`[dep-policy] skipping apps/${dirName}: does not match <anything>-<lang> pattern\n`)
+      process.stderr.write(
+        `[dep-policy] skipping apps/${dirName}: does not match <anything>-<lang> pattern\n`,
+      )
       continue
     }
     results.push({ ...classified, dirName, path: join(root, 'apps', dirName) })

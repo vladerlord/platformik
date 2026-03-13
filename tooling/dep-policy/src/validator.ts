@@ -7,7 +7,7 @@ export interface Violation {
 
 const DEPENDENCY_FLOW: Record<string, string[]> = {
   app: ['lib', 'module', 'contracts', 'runtime', 'vendor'],
-  module: ['lib', 'runtime', 'vendor'],
+  module: ['lib', 'contracts', 'runtime', 'vendor'],
   contracts: ['lib'],
   lib: ['lib'],
   runtime: ['lib'],
@@ -39,7 +39,10 @@ export function validate(
   // External dependency policy check
   if (rule.mode === 'deny_all') {
     for (const dep of external) {
-      violations.push({ dependency: dep, reason: `no external dependencies allowed (mode: deny_all)` })
+      violations.push({
+        dependency: dep,
+        reason: `no external dependencies allowed (mode: deny_all)`,
+      })
     }
   } else if (rule.mode === 'allow') {
     const allowed = rule.packages[lang] ?? []

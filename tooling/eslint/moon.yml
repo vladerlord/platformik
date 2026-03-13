@@ -4,7 +4,7 @@ layer: tool
 
 tasks:
   build:
-    command: 'bun build plugin-module-boundaries/index.ts --outfile plugin-module-boundaries.js --target node'
+    command: 'esbuild plugin-module-boundaries/index.ts --bundle --platform=node --format=esm --outfile=plugin-module-boundaries.js'
     inputs:
       - 'plugin-module-boundaries/**/*.ts'
     outputs:

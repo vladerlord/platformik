@@ -1,0 +1,16 @@
+{
+  "extends": "./configs/typescript/tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./apps/bff-web-platform-ts" },
+    { "path": "./apps/web-platform-ts" },
+    { "path": "./packages/contracts-auth-ts" },
+    { "path": "./packages/lib-logger-ts" },
+    { "path": "./packages/module-iam-ts" },
+    { "path": "./packages/runtime-fastify-ts" },
+    { "path": "./packages/runtime-pg-ts" },
+    { "path": "./packages/runtime-pino-ts" },
+    { "path": "./tooling/dep-policy" },
+    { "path": "./tooling/eslint" }
+  ]
+}

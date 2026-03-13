@@ -3,7 +3,6 @@
   "eslint.format.enable": true,
   "eslint.useFlatConfig": true,
   "editor.formatOnSave": true,
-  "git.blame.editorDecoration.enabled": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -29,5 +28,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
   },
-  "editor.rulers": [120]
+  "editor.rulers": [110]
 }

@@ -1,0 +1,6 @@
+id: contracts-auth-proto
+layer: library
+
+workspace:
+  inheritedTasks:
+    include: []

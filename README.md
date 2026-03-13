@@ -1,7 +1,7 @@
 # Platformik
 
-This repository is currently **scaffolding-only** for Platformik: an educational, showcase-quality AI workflow platform
-for agent pipelines (Temporal-based orchestration, strict memory invariants, and a web UI).
+This repository is currently **scaffolding-only** for Platformik: an educational, showcase-quality AI workflow
+platform for agent pipelines (Temporal-based orchestration, strict memory invariants, and a web UI).
 
 ## Current phase
 

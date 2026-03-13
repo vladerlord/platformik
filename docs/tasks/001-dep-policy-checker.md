@@ -2,31 +2,32 @@
 
 ## Context
 
-We maintain a polyglot monorepo with strict architectural boundaries defined in `boundaries.md` at the repo root.
-Package naming follows a deterministic convention:
+We maintain a polyglot monorepo with strict architectural boundaries defined in `boundaries.md` at the repo
+root. Package naming follows a deterministic convention:
 
 - `apps/<client>-<module>-<lang>` (and `bff-*`, `service-*`, `worker-*` variants)
 - `packages/<role>-<module>-<lang>`
 
-Where `<role>` is one of: `lib`, `domain`, `ports`, `contracts`, `module`, `workflows`, `adapter`, `runtime`, `vendor`,
-`migrations`, `testkit`.
+Where `<role>` is one of: `lib`, `domain`, `ports`, `contracts`, `module`, `workflows`, `adapter`, `runtime`,
+`vendor`, `migrations`, `testkit`.
 
 We already enforce **source-level import boundaries** between roles via an ESLint plugin
-(`tooling/eslint/plugin-boundaries`). However, we have no enforcement over **which external (third-party) packages** a
-given role is allowed to install. For example, nothing prevents `domain-billing-ts` from declaring `pino` in its
-`package.json`, which would violate `boundaries.md` ("no external dependencies").
+(`tooling/eslint/plugin-boundaries`). However, we have no enforcement over **which external (third-party)
+packages** a given role is allowed to install. For example, nothing prevents `domain-billing-ts` from
+declaring `pino` in its `package.json`, which would violate `boundaries.md` ("no external dependencies").
 
 This tool closes that gap.
 
 ## Important: `boundaries.md` is the source of truth
 
-Read `boundaries.md` before implementing. The policy rules below are a **direct translation** of the role descriptions
-in that document. If you see any conflict between this task and `boundaries.md`, `boundaries.md` wins.
+Read `boundaries.md` before implementing. The policy rules below are a **direct translation** of the role
+descriptions in that document. If you see any conflict between this task and `boundaries.md`, `boundaries.md`
+wins.
 
 ## Goal
 
-Create a standalone CLI tool at `tooling/dep-policy/` that validates external dependency declarations across all
-workspace packages against a role-based policy defined in YAML.
+Create a standalone CLI tool at `tooling/dep-policy/` that validates external dependency declarations across
+all workspace packages against a role-based policy defined in YAML.
 
 The tool must:
 
@@ -165,8 +166,8 @@ rules:
 | `deny`      | Listed packages are forbidden. Everything else passes.     |
 | `allow_any` | No restrictions on external dependencies.                  |
 
-The `packages` field in `allow` and `deny` modes is keyed by language code (`ts`, `rs`, `go`, `py`, `kt`, `sw`). If a
-language is not listed, the default behavior depends on the mode:
+The `packages` field in `allow` and `deny` modes is keyed by language code (`ts`, `rs`, `go`, `py`, `kt`,
+`sw`). If a language is not listed, the default behavior depends on the mode:
 
 - `allow` mode + language not listed → no external deps allowed for that language.
 - `deny` mode + language not listed → no deps blocked for that language.
@@ -299,10 +300,11 @@ Run with `bun test`. No test runner config file needed — `bun test` auto-disco
 
 - **`config.test.ts`**: valid config parses correctly; missing fields throw; unknown modes throw.
 - **`discovery.test.ts`**: classifies `packages/domain-billing-ts` →
-  `{ role: 'domain', module: 'billing', lang: 'ts' }`; classifies `apps/service-billing-ts` → `{ role: 'app', ... }`;
-  classifies `apps/bff-web-platform-host-ts` → `{ role: 'app', lang: 'ts' }`; skips malformed directory names.
-- **`parsers/typescript.test.ts`**: extracts `dependencies` + `peerDependencies`; ignores `devDependencies`; handles
-  missing fields gracefully.
+  `{ role: 'domain', module: 'billing', lang: 'ts' }`; classifies `apps/service-billing-ts` →
+  `{ role: 'app', ... }`; classifies `apps/bff-web-platform-host-ts` → `{ role: 'app', lang: 'ts' }`; skips
+  malformed directory names.
+- **`parsers/typescript.test.ts`**: extracts `dependencies` + `peerDependencies`; ignores `devDependencies`;
+  handles missing fields gracefully.
 - **`parsers/rust.test.ts`**: extracts from `[dependencies]`; ignores `[dev-dependencies]`.
 - **`parsers/go.test.ts`**: extracts from `require (...)` block.
 - **`parsers/python.test.ts`**: extracts from `[project] dependencies`.
@@ -317,8 +319,9 @@ Run with `bun test`. No test runner config file needed — `bun test` auto-disco
 
 ### Integration Test
 
-- **`integration.test.ts`**: uses the `__fixtures__/` directory as a fake monorepo root. Runs the full pipeline with a
-  test policy config. Asserts correct violations for known-bad fixtures and clean passes for known-good fixtures.
+- **`integration.test.ts`**: uses the `__fixtures__/` directory as a fake monorepo root. Runs the full
+  pipeline with a test policy config. Asserts correct violations for known-bad fixtures and clean passes for
+  known-good fixtures.
 
 ## Fixture Definitions
 
@@ -420,7 +423,7 @@ Add to root `package.json` scripts:
 
 - Keep total implementation under ~500 lines (excluding tests and fixtures).
 - Each module should be independently testable — no side effects at import time.
-- All functions that do IO (reading files, scanning dirs) should accept the root path as a parameter, never use
-  hardcoded paths.
+- All functions that do IO (reading files, scanning dirs) should accept the root path as a parameter, never
+  use hardcoded paths.
 - Parsers should handle missing manifest files gracefully (warn and skip, don't crash).
 - Use explicit TypeScript types — no `any`.

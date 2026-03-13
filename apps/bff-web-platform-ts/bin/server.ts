@@ -1,9 +1,9 @@
-import { buildContainer } from './container'
+import { buildContainer } from '../src/container'
 
-const { server } = buildContainer()
+const { server } = await buildContainer()
 
 const port = Number(process.env['PORT'] ?? 3000)
-const host = process.env['HOST'] ?? '0.0.0.0'
+const host = '0.0.0.0'
 
 try {
   await server.listen({ port, host })

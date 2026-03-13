@@ -3,7 +3,7 @@ export default {
   semi: false,
   singleQuote: true,
   trailingComma: 'all',
-  printWidth: 120,
+  printWidth: 110,
   tabWidth: 2,
   plugins: ['prettier-plugin-svelte'],
   overrides: [
@@ -13,7 +13,7 @@ export default {
     },
     {
       files: '*.md',
-      options: { printWidth: 120, proseWrap: 'always' },
+      options: { printWidth: 110, proseWrap: 'always' },
     },
   ],
 }

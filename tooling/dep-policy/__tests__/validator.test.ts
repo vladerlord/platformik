@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect } from 'vitest'
 import { validate } from '../src/validator.ts'
 import type { PolicyRule } from '../src/config.ts'
 
@@ -89,6 +89,11 @@ describe('validate — dependency flow', () => {
 
   test('module → runtime is allowed', () => {
     const deps = ['@platformik/runtime-postgres-ts']
+    expect(validate(deps, rule, 'ts', SCOPE, 'module')).toEqual([])
+  })
+
+  test('module → contracts is allowed', () => {
+    const deps = ['@platformik/contracts-auth-ts']
     expect(validate(deps, rule, 'ts', SCOPE, 'module')).toEqual([])
   })
 

@@ -13,7 +13,7 @@ export default defineConfig(
       '**/build/**',
       '**/.svelte-kit/**',
       '**/.moon/**',
-      '**/bun.lockb',
+      '**/pnpm-lock.yaml',
       'tooling/eslint/plugin-module-boundaries.js',
     ],
   },
@@ -59,7 +59,7 @@ export default defineConfig(
         'error',
         {
           monorepoScope: '@platformik',
-          allowedSubpaths: ['contracts'],
+          allowedSubpaths: ['contracts', 'migrations'],
         },
       ],
       'module-boundaries/no-cross-package-relative': 'error',

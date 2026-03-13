@@ -1,0 +1,21 @@
+{
+  "name": "@platformik/module-iam-ts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/module.ts",
+  "module": "./src/module.ts",
+  "types": "./src/module.ts",
+  "exports": {
+    ".": "./src/module.ts",
+    "./contracts": "./src/contracts.ts"
+  },
+  "dependencies": {
+    "@better-auth/kysely-adapter": "catalog:",
+    "better-auth": "catalog:",
+    "kysely": "catalog:",
+    "neverthrow": "catalog:",
+    "uuidv7": "catalog:",
+    "zod": "catalog:"
+  }
+}

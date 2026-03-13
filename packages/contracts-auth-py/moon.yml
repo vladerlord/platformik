@@ -1,0 +1,27 @@
+id: contracts-auth-py
+language: python
+layer: library
+
+workspace:
+  inheritedTasks:
+    include: []
+
+tasks:
+  install:
+    command: 'uv sync --group dev --prerelease=allow'
+    options:
+      cache: true
+      runInCI: false
+
+  build:
+    command: 'protoc --plugin=protoc-gen-python_betterproto=.venv/bin/protoc-gen-python_betterproto --python_betterproto_out=src/generated --proto_path=../contracts-auth-proto/src ../contracts-auth-proto/src/*.proto'
+    deps:
+      - install
+    inputs:
+      - '/packages/contracts-auth-proto/src/*.proto'
+    outputs:
+      - 'src/generated/**/*.py'
+    options:
+      shell: true
+      cache: true
+      runInCI: false

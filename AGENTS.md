@@ -1,21 +1,27 @@
 # Agent instructions (Platformik)
 
-## Monorepo rules
+## Monorepo Rules
 
 - Only `apps/` are deployable (composition roots).
 - `packages/` are libraries only (no deploy).
 - Keep `packages/` flat (no nested grouping folders).
-- bun package manager is used for monorepo packages
-- When adding or updating any dependency (including devDependencies):
-  - Resolve registry latest with `bun pm view <pkg> dist-tags.latest` -> returns `X.Y.Z`
-  - Install using a caret range based on that version:
-    - Runtime: `bun add <pkg>@^X.Y.Z`
-    - Dev: `bun add --dev <pkg>@^X.Y.Z`
+- **Task Runner:** Use `moon run <target>` for all tasks. Never run scripts directly via pnpm.
+- **Environment:** Use `mise run` or `mise exec --` to ensure tools and env vars are loaded from `.mise.toml`.
+- **Package Manager:** Use `pnpm`. Never use npm, bun, or npx (use `pnpm exec` instead).
+- **Runtime:** Use `tsx` for running TypeScript files directly (`tsx <file.ts>`).
+
+### Dependency Installation Rules
+
+When adding or updating any dependency (including devDependencies), strictly follow these steps:
+
+1. Resolve registry latest with `pnpm view <pkg> dist-tags.latest` -> returns `X.Y.Z`
+2. For shared dependencies in workspace manifests, never write concrete versions; define the version as
+   `^X.Y.Z` in the pnpm catalog (`pnpm-workspace.yaml`) and reference it as `"catalog:"`.
 
 ## Validation loop
 
-After making changes, always run the fix + validate loop for affected projects. `<scope>` is the project `id` from its
-`moon.yml`.
+After making changes, always run the fix + validate loop for affected projects. `<scope>` is the project `id`
+from its `moon.yml`.
 
 ```bash
 moon run <scope>:fix          # lint-fix + format-fix
@@ -34,10 +40,12 @@ moon run tooling-content:validate
 - Product docs live in `docs/product/`.
 - Language-agnostic architecture docs live in `docs/architecture/`.
 - Language-specific stacks live in `docs/stacks/`.
+- Before writing TypeScript code in `apps/` or `packages/`, **read `docs/stacks/typescript.md` first**.
 - Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
-- Before scaffolding anything new (app, package, config, tooling), **read `docs/architecture/boundaries.md` first**.
+- Before scaffolding anything new (app, package, config, tooling), **read `docs/architecture/boundaries.md`
+  first**.
 
 ## Tooling
 
-- Use `mise` for installing toolchains (don’t assume system tools).
+- Use `mise` for installing toolchains (don't assume system tools).
 - Use Moonrepo for repo task orchestration once projects have real code.
