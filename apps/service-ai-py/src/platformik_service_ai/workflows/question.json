@@ -1,0 +1,31 @@
+{
+  "version": "question-flow-v2",
+  "start_node_id": "start",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "next_node_id": "choose-action"
+    },
+    {
+      "id": "choose-action",
+      "type": "option_selection",
+      "question": "What would you like to do?",
+      "answer_key": "chosen_action",
+      "options": [
+        { "label": "Show help", "next_node_id": "send-help" },
+        { "label": "Finish", "next_node_id": "end" }
+      ]
+    },
+    {
+      "id": "send-help",
+      "type": "send_message",
+      "message_template": "You selected: {chosen_action}",
+      "next_node_id": "choose-action"
+    },
+    {
+      "id": "end",
+      "type": "end"
+    }
+  ]
+}

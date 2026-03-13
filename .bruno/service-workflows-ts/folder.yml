@@ -1,0 +1,7 @@
+info:
+  name: service-workflows-ts
+  type: folder
+  seq: 3
+
+request:
+  auth: inherit

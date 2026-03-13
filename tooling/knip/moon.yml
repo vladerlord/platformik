@@ -1,0 +1,35 @@
+# This project runs static dependency/code usage audits through Knip.
+# Exclude inherited TS tasks: this tool is command-only and runs from workspace root.
+id: tooling-knip
+layer: tool
+
+workspace:
+  inheritedTasks:
+    include: []
+
+tasks:
+  dead-code:
+    command: 'mise exec -- pnpm exec knip --include files,exports --reporter compact'
+    options:
+      cache: false
+      runInCI: true
+      runFromWorkspaceRoot: true
+
+  unused-packages:
+    command: 'mise exec -- pnpm exec knip --include dependencies,catalog --reporter compact'
+    options:
+      cache: false
+      runInCI: true
+      runFromWorkspaceRoot: true
+
+  fix:
+    deps:
+      - dead-code
+      - unused-packages
+    options:
+      runInCI: false
+
+  validate:
+    deps:
+      - dead-code
+      - unused-packages

@@ -70,7 +70,7 @@ Examples:
     - self-contained business capability (bounded context)
     - owns domain model, persistence, adapters, use cases, and migrations
     - exports: public contracts (types, schemas, interfaces) via `./contracts`, a module factory function via
-      `.` main entry, and optional migration definitions via `./migrations` for app-owned migration runners
+      `.` main entry
     - internal structure is at the author's discretion: simple modules may be flat, complex modules may use
       ports/adapters/domain layers internally
     - modules never import other modules — cross-module composition happens in apps
@@ -130,8 +130,6 @@ Modules expose these public entry points via `package.json` `exports` field:
 
 - `"."` → `src/module.ts` — factory function, imported only by apps for wiring
 - `"./contracts"` → `src/contracts.ts` — public types, interfaces, zod schemas
-- `"./migrations"` → `migrations/index.ts` — optional migration definitions, imported only by app-owned
-  migration runners
 
 Everything else inside `src/` is internal implementation and must not be imported from outside. Migration
 execution, connection lifecycle, and DSN/env handling remain app-owned even when migration definitions are
@@ -140,14 +138,8 @@ exported by modules.
 ## Codegen (proto → lang)
 
 `<schema>` packages are inputs to codegen tooling. Generated artifacts are committed to the repository and
-land in `<lang>` packages. CI verifies generated code is up to date:
-
-```text
-packages/contracts-ai-proto/             → source .proto files
-    ↓ tooling/codegen-proto
-packages/contracts-ai-ts/src/generated/  → generated TS gRPC client types
-apps/service-ai-py/src/generated/        → generated Python gRPC server stubs
-```
+land in dedicated `<lang>` packages — one per target language. Generated code always goes into a dedicated
+`contracts-<name>-<lang>` package.
 
 ## Configs
 

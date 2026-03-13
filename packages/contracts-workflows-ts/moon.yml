@@ -1,0 +1,23 @@
+id: contracts-workflows-ts
+language: typescript
+layer: library
+
+tasks:
+  generate:
+    command: >
+      protoc
+      --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto
+      --ts_proto_out=./src/generated
+      --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useExactTypes=false,Mprimitives.proto=@platformik/contracts-primitives-ts
+      --proto_path=../contracts-workflows-proto/src
+      --proto_path=../contracts-primitives-proto/src
+      ../contracts-workflows-proto/src/workflows.proto
+    inputs:
+      - '/packages/contracts-workflows-proto/src/*.proto'
+      - '/packages/contracts-primitives-proto/src/*.proto'
+    outputs:
+      - 'src/generated/*.ts'
+    options:
+      shell: true
+      cache: true
+      runInCI: false

@@ -1,0 +1,89 @@
+$schema: 'https://moonrepo.dev/schemas/v2/tasks.json'
+
+inheritedBy:
+  languages: ['python']
+
+tasks:
+  install:
+    command: 'mise x -- uv sync --group dev'
+    inputs:
+      - 'pyproject.toml'
+      - 'uv.lock'
+    options:
+      cache: true
+      runInCI: true
+
+  lint:
+    command: 'mise x -- uv run --no-sync ruff check .'
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: true
+      runInCI: true
+
+  lint-fix:
+    command: 'mise x -- uv run --no-sync ruff check --fix .'
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: false
+      runInCI: false
+
+  format:
+    command: 'mise x -- uv run --no-sync ruff format --check .'
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: true
+      runInCI: true
+
+  format-fix:
+    command: 'mise x -- uv run --no-sync ruff format .'
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: false
+      runInCI: false
+
+  typecheck:
+    command: 'mise x -- uv run --no-sync pyright .'
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+      - '/pyrightconfig.json'
+    options:
+      cache: true
+      runInCI: true
+
+  test:
+    command: 'sh -c ''mise x -- uv run --no-sync pytest -c ../../configs/python/pytest.ini; code=$?; [ "$code" -eq 5 ] && exit 0; exit "$code"'''
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: false
+      runInCI: true
+
+  fix:
+    deps:
+      - lint-fix
+      - format-fix
+    options:
+      runInCI: false
+
+  validate:
+    deps:
+      - lint
+      - format
+      - typecheck
+      - test

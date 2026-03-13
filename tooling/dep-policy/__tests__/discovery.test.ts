@@ -97,10 +97,10 @@ describe('classifyApp', () => {
     })
   })
 
-  test('classifies bff-web-platform-ts', () => {
-    expect(classifyApp('bff-web-platform-ts', TEST_VOCAB)).toEqual({
+  test('classifies api-platform-ts', () => {
+    expect(classifyApp('api-platform-ts', TEST_VOCAB)).toEqual({
       role: 'app',
-      name: 'bff-web-platform',
+      name: 'api-platform',
       suffix: 'ts',
       kind: 'lang',
     })

@@ -1,0 +1,34 @@
+id: service-ai-py
+language: python
+layer: application
+
+fileGroups:
+  sources:
+    - glob: 'src/**/*.py'
+      cache: true
+    - glob: 'tests/**/*.py'
+      cache: true
+    - file: 'pyproject.toml'
+    - file: '/configs/python/ruff.toml'
+    - file: '/configs/python/pytest.ini'
+
+tasks:
+  worker:
+    command: 'mise x -- uv run --no-sync service-ai-worker'
+    deps:
+      - install
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: false
+      runInCI: false
+      persistent: true
+
+  cli:
+    command: 'mise x -- uv run --no-sync service-ai'
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: false
+      runInCI: false
+      mergeArgs: append
