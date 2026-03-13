@@ -1,4 +1,4 @@
-import { expect, test, beforeAll, afterAll } from 'bun:test'
+import { expect, test, beforeAll, afterAll } from 'vitest'
 import { ESLint } from 'eslint'
 import tsParser from '@typescript-eslint/parser'
 import { mkdirSync, writeFileSync, rmSync } from 'node:fs'

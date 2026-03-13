@@ -13,7 +13,7 @@ export default defineConfig(
       '**/build/**',
       '**/.svelte-kit/**',
       '**/.moon/**',
-      '**/bun.lockb',
+      '**/pnpm-lock.yaml',
       'tooling/eslint/plugin-module-boundaries.js',
     ],
   },

@@ -6,6 +6,7 @@ tasks:
     inputs:
       - '**/*.{ts,tsx,mts,cts}'
       - 'tsconfig.json'
+      - '/configs/typescript/tsconfig.base.json'
     options:
       cache: true
       runInCI: true
@@ -46,7 +47,7 @@ tasks:
       runInCI: false
 
   test:
-    command: 'bun test'
+    command: 'vitest run --passWithNoTests'
     options:
       cache: false
       runInCI: true

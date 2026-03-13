@@ -1,12 +1,13 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect } from 'vitest'
 import { join } from 'path'
+import { fileURLToPath } from 'url'
 import { loadConfig } from '../src/config.ts'
 import { discoverPackages } from '../src/discovery.ts'
 import { typescriptParser } from '../src/parsers/typescript.ts'
 import { validate } from '../src/validator.ts'
 import { report, type PackageViolations } from '../src/reporter.ts'
 
-const FIXTURES_ROOT = join(import.meta.dir, '../__fixtures__')
+const FIXTURES_ROOT = fileURLToPath(new URL('../__fixtures__', import.meta.url))
 const FIXTURES_POLICY = join(FIXTURES_ROOT, 'policy.yaml')
 
 const PARSERS: Record<string, { parse(dir: string): string[] }> = {

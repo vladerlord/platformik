@@ -1,7 +1,7 @@
-import { Kysely, Migrator, PostgresDialect } from 'kysely'
+import { iamMigrations } from '@platformik/module-iam-ts'
 import type { IamDatabase } from '@platformik/module-iam-ts/contracts'
-import { iamMigrations } from '@platformik/module-iam-ts/migrations'
 import { createPgPool } from '@platformik/runtime-pg-ts'
+import { Kysely, Migrator, PostgresDialect } from 'kysely'
 import z from 'zod'
 
 const envSchema = z.object({

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from 'bun:test'
+import { afterEach, describe, expect, test } from 'vitest'
 import rateLimit from '@fastify/rate-limit'
 import type {
   GetSessionError,
@@ -22,6 +22,11 @@ import { authWriteRoutePaths, registerAuthRoutes } from './auth'
 import { registerAuthGuard } from '../ops/http/auth'
 
 const parseJsonBody = (body: string): unknown => JSON.parse(body)
+const normalizeSetCookieHeader = (header: string | string[] | undefined): string[] => {
+  if (!header) return []
+
+  return Array.isArray(header) ? header : [header]
+}
 
 const createAuthUser = (): IamAuthUser => ({
   id: 'user-1',
@@ -216,7 +221,7 @@ describe('registerAuthRoutes', () => {
         updatedAt: '2030-01-01T00:00:00.000Z',
       },
     })
-    expect(response.headers['set-cookie']).toEqual(
+    expect(normalizeSetCookieHeader(response.headers['set-cookie'])).toEqual(
       expect.arrayContaining(['better-auth.session_token=opaque; HttpOnly; Path=/']),
     )
   })
@@ -237,7 +242,7 @@ describe('registerAuthRoutes', () => {
     })
 
     expect(response.statusCode).toBe(200)
-    expect(response.headers['set-cookie']).toEqual(
+    expect(normalizeSetCookieHeader(response.headers['set-cookie'])).toEqual(
       expect.arrayContaining(['better-auth.session_data=opaque; HttpOnly; Path=/']),
     )
   })
@@ -258,7 +263,7 @@ describe('registerAuthRoutes', () => {
     })
 
     expect(response.statusCode).toBe(200)
-    expect(response.headers['set-cookie']).toEqual(
+    expect(normalizeSetCookieHeader(response.headers['set-cookie'])).toEqual(
       expect.arrayContaining(['better-auth.session_data=opaque; HttpOnly; Path=/']),
     )
   })

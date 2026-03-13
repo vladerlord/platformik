@@ -15,8 +15,10 @@ fileGroups:
 
 tasks:
   dev:
-    command: mise x -- bun run --watch bin/server.ts
+    command: mise x -- tsx watch bin/server.ts
     inputs:
       - '@group(sources)'
   migrate:
-    command: 'mise x -- bun bin/migrate-iam.ts'
+    command: 'mise x -- tsx bin/migrate-iam.ts'
+    options:
+      cache: false

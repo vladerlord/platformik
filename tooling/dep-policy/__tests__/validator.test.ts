@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect } from 'vitest'
 import { validate } from '../src/validator.ts'
 import type { PolicyRule } from '../src/config.ts'
 

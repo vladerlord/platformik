@@ -1,11 +1,12 @@
-import { describe, test, expect } from 'bun:test'
+import { describe, test, expect } from 'vitest'
 import { classifyPackage, classifyApp, discoverPackages, type DiscoveryVocab } from '../src/discovery.ts'
 import { loadConfig } from '../src/config.ts'
 import { mkdtempSync, mkdirSync, rmSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
+import { fileURLToPath } from 'url'
 
-const FIXTURES_ROOT = join(import.meta.dir, '../__fixtures__')
+const FIXTURES_ROOT = fileURLToPath(new URL('../__fixtures__', import.meta.url))
 const FIXTURE_CONFIG = loadConfig(join(FIXTURES_ROOT, 'policy.yaml'))
 
 const TEST_VOCAB: DiscoveryVocab = {

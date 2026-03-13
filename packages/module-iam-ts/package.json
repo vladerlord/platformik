@@ -8,8 +8,7 @@
   "types": "./src/module.ts",
   "exports": {
     ".": "./src/module.ts",
-    "./contracts": "./src/contracts.ts",
-    "./migrations": "./migrations/index.ts"
+    "./contracts": "./src/contracts.ts"
   },
   "dependencies": {
     "@better-auth/kysely-adapter": "catalog:",

@@ -16,10 +16,10 @@ import { resolveAppRateLimitConfig } from './config/rate-limit'
 import { registerAuthGuard } from './ops/http/auth'
 
 const envSchema = z.object({
-  IAM_DATABASE_URL: z.string().nonempty(),
-  AUTH_BASE_URL: z.string().nonempty(),
-  AUTH_SECRET: z.string().nonempty(),
-  CLIENT_ORIGIN: z.string().nonempty(),
+  IAM_DATABASE_URL: z.string().min(1),
+  AUTH_BASE_URL: z.string().min(1),
+  AUTH_SECRET: z.string().min(1),
+  CLIENT_ORIGIN: z.string().min(1),
   NODE_ENV: nodeEnvSchema,
 })
 export const ENV = envSchema.parse(process.env)

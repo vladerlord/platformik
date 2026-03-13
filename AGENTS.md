@@ -5,17 +5,18 @@
 - Only `apps/` are deployable (composition roots).
 - `packages/` are libraries only (no deploy).
 - Keep `packages/` flat (no nested grouping folders).
-- **Task Runner:** Use `moon run <target>` for all tasks. Never run scripts directly via bun.
+- **Task Runner:** Use `moon run <target>` for all tasks. Never run scripts directly via pnpm.
 - **Environment:** Use `mise run` or `mise exec --` to ensure tools and env vars are loaded from `.mise.toml`.
-- **Package Manager:** Use `bun`. Never use npm, pnpm, or npx (use `bunx` instead).
+- **Package Manager:** Use `pnpm`. Never use npm, bun, or npx (use `pnpm exec` instead).
+- **Runtime:** Use `tsx` for running TypeScript files directly (`tsx <file.ts>`).
 
 ### Dependency Installation Rules
 
 When adding or updating any dependency (including devDependencies), strictly follow these steps:
 
-1. Resolve registry latest with `bun pm view <pkg> dist-tags.latest` -> returns `X.Y.Z`
+1. Resolve registry latest with `pnpm view <pkg> dist-tags.latest` -> returns `X.Y.Z`
 2. For shared dependencies in workspace manifests, never write concrete versions; define the version as
-   `^X.Y.Z` in the root Bun catalog and reference it as `"catalog:"`.
+   `^X.Y.Z` in the pnpm catalog (`pnpm-workspace.yaml`) and reference it as `"catalog:"`.
 
 ## Validation loop
 
@@ -46,5 +47,5 @@ moon run tooling-content:validate
 
 ## Tooling
 
-- Use `mise` for installing toolchains (don’t assume system tools).
+- Use `mise` for installing toolchains (don't assume system tools).
 - Use Moonrepo for repo task orchestration once projects have real code.

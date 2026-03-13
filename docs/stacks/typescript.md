@@ -1,8 +1,10 @@
-# TypeScript stack (planned)
+# TypeScript stack
 
 ## Tooling
 
-- `bun` as runtime/package manager
+- `pnpm` as package manager (`pnpm-workspace.yaml` catalog for shared versions)
+- `tsx` as TypeScript runtime (`tsx <file.ts>`, `tsx watch <file.ts>`)
+- `vitest` as test runner
 - `eslint` (root `eslint.config.mjs`)
 - base TS config: `configs/typescript/tsconfig.base.json`
 

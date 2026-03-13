@@ -9,10 +9,8 @@ __pycache__/
 .mypy_cache/
 .venv/
 
-# Node/Bun
+# Node
 node_modules/
-.bun-cache/
-.bun-tmp/
 .turbo/
 dist/
 build/
