@@ -1,0 +1,28 @@
+info:
+  name: start-workflow
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/workflows/runs'
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |
+      {
+        "workflowId": "{{workflowId}}"
+      }
+  auth: bearer
+
+auth:
+  bearer:
+    token: '{{sessionToken}}'
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

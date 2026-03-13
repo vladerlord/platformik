@@ -1,0 +1,30 @@
+{
+  "name": "@platformik/api-platform-ts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@fastify/cors": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@fastify/sse": "catalog:",
+    "@platformik/contracts-auth-ts": "workspace:*",
+    "@platformik/contracts-workflows-ts": "workspace:*",
+    "@platformik/module-iam-ts": "workspace:*",
+    "@platformik/runtime-fastify-ts": "workspace:*",
+    "@platformik/runtime-pg-ts": "workspace:*",
+    "@platformik/runtime-pino-ts": "workspace:*",
+    "better-auth": "catalog:",
+    "fastify": "catalog:",
+    "ioredis": "catalog:",
+    "kysely": "catalog:",
+    "neverthrow": "catalog:",
+    "nice-grpc": "catalog:",
+    "pg": "catalog:",
+    "ts-pattern": "catalog:",
+    "uuidv7": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/pg": "catalog:"
+  }
+}

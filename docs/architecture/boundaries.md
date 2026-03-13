@@ -34,7 +34,7 @@ codegen configuration.
 ### Apps
 
 - `apps/<client>-<name>-<lang>`
-- `apps/bff-<client>-<name>-<lang>`
+- `apps/api-<name>-<lang>`
 - `apps/service-<name>-<lang>`
 - `apps/worker-<name>-<lang>`
 
@@ -43,9 +43,9 @@ codegen configuration.
   - `cli`: installable client/tool that talks to a backend
   - `android|ios|macos`: native client apps
 - `<name>`: deployable identifier (may include qualifiers)
-- `bff`: backend-for-frontend for a single client app (1:1 with `<client>` + `<name>`)
+- `api`: public backend entrypoint for client-facing HTTP APIs and SSE streams
 - `worker`: async/background processing entrypoint (RabbitMQ consumers, Temporal workers)
-- `service`: deployable backend entrypoint (HTTP/gRPC server)
+- `service`: private backend entrypoint (HTTP/gRPC server)
 
 Apps own process lifecycle: they initialize and gracefully close `runtime` and `vendor` resources. Apps are
 the orchestration layer — they wire modules together and compose cross-module logic.
@@ -53,9 +53,9 @@ the orchestration layer — they wire modules together and compose cross-module 
 Examples:
 
 - `apps/web-platform-ts`
-- `apps/bff-web-platform-ts`
-- `apps/bff-cli-platform-ts`
-- `apps/service-api-ts`
+- `apps/cli-platform-ts`
+- `apps/api-platform-ts`
+- `apps/service-workflows-ts`
 - `apps/service-ai-py`
 - `apps/worker-flow-runner-ts`
 - `apps/worker-events-ts`
@@ -70,13 +70,13 @@ Examples:
     - self-contained business capability (bounded context)
     - owns domain model, persistence, adapters, use cases, and migrations
     - exports: public contracts (types, schemas, interfaces) via `./contracts`, a module factory function via
-      `.` main entry, and optional migration definitions via `./migrations` for app-owned migration runners
+      `.` main entry
     - internal structure is at the author's discretion: simple modules may be flat, complex modules may use
       ports/adapters/domain layers internally
     - modules never import other modules — cross-module composition happens in apps
   - `contracts`:
     - shared cross-boundary schemas not owned by any single module
-    - `<lang>` variant: executable schemas (e.g. zod DTOs shared between BFF and web client)
+    - `<lang>` variant: executable schemas (e.g. zod DTOs shared between an API app and a web client)
     - `<schema>` variant: language-neutral IDL for codegen (e.g. protobuf for gRPC); contains only schema
       files — generated code goes into `<lang>` packages
     - no domain logic, no business rules
@@ -130,8 +130,6 @@ Modules expose these public entry points via `package.json` `exports` field:
 
 - `"."` → `src/module.ts` — factory function, imported only by apps for wiring
 - `"./contracts"` → `src/contracts.ts` — public types, interfaces, zod schemas
-- `"./migrations"` → `migrations/index.ts` — optional migration definitions, imported only by app-owned
-  migration runners
 
 Everything else inside `src/` is internal implementation and must not be imported from outside. Migration
 execution, connection lifecycle, and DSN/env handling remain app-owned even when migration definitions are
@@ -140,14 +138,8 @@ exported by modules.
 ## Codegen (proto → lang)
 
 `<schema>` packages are inputs to codegen tooling. Generated artifacts are committed to the repository and
-land in `<lang>` packages. CI verifies generated code is up to date:
-
-```text
-packages/contracts-ai-proto/             → source .proto files
-    ↓ tooling/codegen-proto
-packages/contracts-ai-ts/src/generated/  → generated TS gRPC client types
-apps/service-ai-py/src/generated/        → generated Python gRPC server stubs
-```
+land in dedicated `<lang>` packages — one per target language. Generated code always goes into a dedicated
+`contracts-<name>-<lang>` package.
 
 ## Configs
 
@@ -183,10 +175,10 @@ codegen tooling only.
   and optional `"./migrations"` exports. Direct imports of internal paths (e.g.
   `module-iam-ts/src/adapters/...`) are forbidden. Enforced by ESLint at the source-code level.
 - **Shared contracts scope**: `contracts` packages exist for cross-boundary schemas that are not owned by any
-  single module (e.g. REST API schemas shared between BFF and web client, or protobuf definitions for
+  single module (e.g. REST API schemas shared between an API app and a web client, or protobuf definitions for
   cross-language gRPC).
 - **Cross-language boundary**: TypeScript and Python communicate via gRPC (with streaming support). Rust CLI
-  communicates with BFF via HTTP. No source-level imports across languages.
+  communicates with API apps via HTTP. No source-level imports across languages.
 
 ## External dependency policy
 

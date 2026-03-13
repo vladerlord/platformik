@@ -1,0 +1,16 @@
+info:
+  name: SubmitAnswer
+  type: grpc
+  seq: 4
+
+grpc:
+  url: '{{serviceWorkflowsGrpcBaseUrl}}'
+  method: /platformik.workflows.v1.WorkflowsService/SubmitAnswer
+  methodType: unary
+  protoFilePath: ../../packages/contracts-workflows-proto/src/workflows.proto
+  message: |
+    {
+      "workflowRunId": "",
+      "selectOption": { "optionId": "" }
+    }
+  auth: inherit

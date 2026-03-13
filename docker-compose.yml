@@ -17,5 +17,24 @@ services:
       POSTGRES_PASSWORD: platformik-password
       POSTGRES_DB: platformik
 
+  redis-7:
+    image: redis:7-alpine
+    ports:
+      - '52001:6379'
+    restart: 'no'
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  temporal:
+    image: temporalio/temporal:latest
+    ports:
+      - '7233:7233'
+      - '8233:8233'
+    restart: 'no'
+    command: ['server', 'start-dev', '--ip', '0.0.0.0', '--namespace', 'default']
+
 volumes:
   postgres-18.1:

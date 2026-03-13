@@ -1,4 +1,7 @@
-$schema: 'https://moonrepo.dev/schemas/tasks.json'
+$schema: 'https://moonrepo.dev/schemas/v2/tasks.json'
+
+inheritedBy:
+  languages: ['typescript', 'javascript']
 
 tasks:
   typecheck:
