@@ -1,0 +1,15 @@
+info:
+  name: StartWorkflow
+  type: grpc
+  seq: 2
+
+grpc:
+  url: '{{serviceWorkflowsGrpcBaseUrl}}'
+  method: /platformik.workflows.v1.WorkflowsService/StartWorkflow
+  methodType: unary
+  protoFilePath: ../../packages/contracts-workflows-proto/src/workflows.proto
+  message: |
+    {
+      "workflowId": ""
+    }
+  auth: inherit

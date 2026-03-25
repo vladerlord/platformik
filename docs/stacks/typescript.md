@@ -1,5 +1,13 @@
 # TypeScript stack
 
+## Dependency installation
+
+Never guess versions. For every new dependency:
+
+1. `pnpm view <pkg> dist-tags.latest` → get `X.Y.Z`
+2. Add `<pkg>: ^X.Y.Z` to the `catalog:` section in `pnpm-workspace.yaml`
+3. In every `apps/` and `packages/` manifest, set the version to `"catalog:"`
+
 ## Tooling
 
 - `pnpm` as package manager (`pnpm-workspace.yaml` catalog for shared versions)
@@ -13,10 +21,17 @@
 - Internal packages use scope: `@platformik/<dir-name>`
 - Directory name stays the source of truth.
 
-## Error handling
+## Application entrypoints
 
-- All TypeScript code in `apps/` and `packages/` should use `neverthrow`.
-- Functions should return `Result` or `ResultAsync` instead of throwing exceptions for expected failures.
+All process entrypoints live in `bin/` (`migrate.ts`, `server.ts`, `seed.ts`). Each is a standalone `tsx`
+script with top-level `await` — no `main()` wrapper.
+
+- `fileGroups.sources` in `moon.yml` must include `'bin/*'`
+- Migrations run explicitly (`moon run <app>:migrate`), never on server startup
+
+## Error handling for apps without Effect-ts
+
+- Use `neverthrow`: return `Result` or `ResultAsync` instead of throwing for expected failures.
 - Do not use exceptions as an application-level error flow between packages or across app code paths.
-- At the top of the call chain, use `ts-pattern` to exhaustively enumerate the error variants and map them to
-  the final behavior or transport response.
+- At the top of the call chain, use `ts-pattern` to exhaustively enumerate error variants and map them to the
+  final behavior or transport response.

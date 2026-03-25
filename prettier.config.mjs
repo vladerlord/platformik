@@ -5,7 +5,7 @@ export default {
   trailingComma: 'all',
   printWidth: 110,
   tabWidth: 2,
-  plugins: ['prettier-plugin-svelte'],
+  plugins: ['prettier-plugin-svelte', 'prettier-plugin-toml'],
   overrides: [
     {
       files: '*.svelte',

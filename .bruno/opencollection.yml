@@ -2,6 +2,32 @@ opencollection: 1.0.0
 
 info:
   name: platformik
+config:
+  protobuf:
+    protoFiles:
+      - type: file
+        path: ../packages/contracts-primitives-proto/src/primitives.proto
+      - type: file
+        path: ../packages/contracts-workflows-proto/src/workflows.proto
+      - type: file
+        path: ../packages/contracts-auth-proto/src/auth_context.proto
+      - type: file
+        path: ../packages/contracts-cli-platform-proto/src/cli_platform.proto
+    importPaths:
+      - path: ../packages/contracts-primitives-proto/src
+      - path: ../packages/contracts-workflows-proto/src
+      - path: ../packages/contracts-auth-proto/src
+      - path: ../packages/contracts-cli-platform-proto/src
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ''
+      port: ''
+      auth:
+        username: ''
+        password: ''
+      bypassProxy: ''
 bundled: false
 extensions:
   bruno:

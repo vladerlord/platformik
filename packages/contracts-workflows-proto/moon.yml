@@ -1,0 +1,6 @@
+id: contracts-workflows-proto
+layer: library
+
+workspace:
+  inheritedTasks:
+    include: []

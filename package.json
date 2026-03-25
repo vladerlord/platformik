@@ -9,8 +9,10 @@
     "eslint": "^10.0.0",
     "eslint-plugin-svelte": "^3.15.0",
     "globals": "^17.4.0",
+    "knip": "^6.0.5",
     "prettier": "^3.8.1",
     "prettier-plugin-svelte": "^3.5.1",
+    "prettier-plugin-toml": "catalog:",
     "tsx": "catalog:",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
@@ -20,10 +22,5 @@
     "onlyBuiltDependencies": [
       "esbuild"
     ]
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "test": "vitest run",
-    "check:deps": "tsx tooling/dep-policy/src/index.ts"
   }
 }

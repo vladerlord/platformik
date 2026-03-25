@@ -7,7 +7,7 @@ import {
   parseSignOutSuccessPayload,
   parseSignUpSuccessPayload,
 } from './payloads'
-import { createBetterAuth } from '../ops/better-auth'
+import { createBetterAuth } from './better-auth'
 import type {
   GetSessionResult,
   IamAuthSuccess,
@@ -18,7 +18,7 @@ import type {
   SignUpBody,
   SignUpResult,
 } from '../contracts'
-import type { IamDatabase } from '../ops/db-schema'
+import type { IamDatabase } from '../db/schema'
 
 export type InternalIamAuth = {
   signUp: (body: SignUpBody, headers: Headers) => Promise<SignUpResult>

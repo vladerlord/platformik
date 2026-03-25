@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package platformik.primitives.v1;
+
+// UUID represents a UUIDv7 identifier.
+// The value is a canonical lowercase hyphenated string: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+message UUID {
+  string value = 1;
+}

@@ -1,0 +1,32 @@
+{
+  "version": "programming-language-v1",
+  "start_node_id": "start",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "next_node_id": "ask-language"
+    },
+    {
+      "id": "ask-language",
+      "type": "option_selection",
+      "question": "What is your favorite programming language?",
+      "answer_key": "language",
+      "options": [
+        { "label": "TypeScript", "next_node_id": "send-summary" },
+        { "label": "Python", "next_node_id": "send-summary" },
+        { "label": "Go", "next_node_id": "send-summary" }
+      ]
+    },
+    {
+      "id": "send-summary",
+      "type": "send_message",
+      "message_template": "Language: {language}",
+      "next_node_id": "end"
+    },
+    {
+      "id": "end",
+      "type": "end"
+    }
+  ]
+}

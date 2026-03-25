@@ -1,0 +1,28 @@
+info:
+  name: submit-answer
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: '{{baseUrl}}/api/v1/workflows/runs/{{workflowRunId}}/answer'
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |
+      {
+        "optionId": "{{optionId}}"
+      }
+  auth: bearer
+
+auth:
+  bearer:
+    token: '{{sessionToken}}'
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

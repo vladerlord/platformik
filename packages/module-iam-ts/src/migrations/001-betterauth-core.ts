@@ -1,5 +1,5 @@
 import type { Kysely } from 'kysely'
-import type { IamDatabase } from '../ops/db-schema'
+import type { IamDatabase } from '../db/schema'
 
 export const betterAuthCoreMigration = {
   up: async (db: Kysely<IamDatabase>): Promise<void> => {

@@ -1,9 +1,9 @@
 import type { Kysely } from 'kysely'
 import type { Result } from 'neverthrow'
 import { z } from 'zod'
-import type { IamDatabase } from './ops/db-schema'
+import type { IamDatabase } from './db/schema'
 
-export type { IamDatabase } from './ops/db-schema'
+export type { IamDatabase } from './db/schema'
 
 export const signUpBodySchema = z.object({
   name: z.string().min(1),

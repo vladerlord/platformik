@@ -1,0 +1,5 @@
+{
+  "name": "@platformik/tooling-knip",
+  "private": true,
+  "type": "module"
+}

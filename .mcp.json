@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/insiders",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    },
+    "effect_docs": {
+      "type": "stdio",
+      "command": "bunx",
+      "args": ["-y", "effect-mcp@latest"]
+    }
+  }
+}

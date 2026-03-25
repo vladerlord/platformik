@@ -6,3 +6,7 @@ variables:
     name: password
   - name: baseUrl
     value: http://127.0.0.1:3000
+  - name: serviceWorkflowsGrpcBaseUrl
+    value: http://127.0.0.1:50051
+  - name: bffCliPlatformGrpcBaseUrl
+    value: http://127.0.0.1:50052

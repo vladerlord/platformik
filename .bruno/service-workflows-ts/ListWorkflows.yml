@@ -1,0 +1,13 @@
+info:
+  name: ListWorkflows
+  type: grpc
+  seq: 1
+
+grpc:
+  url: '{{serviceWorkflowsGrpcBaseUrl}}'
+  method: /platformik.workflows.v1.WorkflowsService/ListWorkflows
+  methodType: unary
+  protoFilePath: ../../packages/contracts-workflows-proto/src/workflows.proto
+  message: |
+    {}
+  auth: inherit
