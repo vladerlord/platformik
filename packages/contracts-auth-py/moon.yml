@@ -8,13 +8,13 @@ workspace:
 
 tasks:
   install:
-    command: 'uv sync --group dev --prerelease=allow'
+    command: 'mise x -- uv sync --group dev'
     options:
       cache: true
       runInCI: false
 
-  build:
-    command: 'protoc --plugin=protoc-gen-python_betterproto=.venv/bin/protoc-gen-python_betterproto --python_betterproto_out=src/generated --proto_path=../contracts-auth-proto/src ../contracts-auth-proto/src/*.proto'
+  generate:
+    command: 'mise x -- protoc --plugin=protoc-gen-python_betterproto=.venv/bin/protoc-gen-python_betterproto --python_betterproto_out=src/generated --proto_path=../contracts-auth-proto/src ../contracts-auth-proto/src/*.proto'
     deps:
       - install
     inputs:

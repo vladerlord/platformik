@@ -1,0 +1,23 @@
+id: service-ai-py
+language: python
+layer: application
+
+fileGroups:
+  sources:
+    - glob: 'src/**/*.py'
+      cache: true
+    - glob: 'tests/**/*.py'
+      cache: true
+    - file: 'pyproject.toml'
+    - file: '/configs/python/ruff.toml'
+    - file: '/configs/python/pytest.ini'
+
+tasks:
+  cli:
+    command: 'mise x -- uv run --no-sync python -m platformik_service_ai.main'
+    inputs:
+      - '@group(sources)'
+    options:
+      cache: false
+      runInCI: false
+      mergeArgs: append

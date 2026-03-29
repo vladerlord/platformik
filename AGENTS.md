@@ -2,21 +2,10 @@
 
 ## Monorepo Rules
 
-- Only `apps/` are deployable (composition roots).
-- `packages/` are libraries only (no deploy).
-- Keep `packages/` flat (no nested grouping folders).
 - **Task Runner:** Use `moon run <target>` for all tasks. Never run scripts directly via pnpm.
 - **Environment:** Use `mise run` or `mise exec --` to ensure tools and env vars are loaded from `.mise.toml`.
 - **Package Manager:** Use `pnpm`. Never use npm, bun, or npx (use `pnpm exec` instead).
 - **Runtime:** Use `tsx` for running TypeScript files directly (`tsx <file.ts>`).
-
-### Dependency Installation Rules
-
-When adding or updating any dependency (including devDependencies), strictly follow these steps:
-
-1. Resolve registry latest with `pnpm view <pkg> dist-tags.latest` -> returns `X.Y.Z`
-2. For shared dependencies in workspace manifests, never write concrete versions; define the version as
-   `^X.Y.Z` in the pnpm catalog (`pnpm-workspace.yaml`) and reference it as `"catalog:"`.
 
 ## Validation loop
 
@@ -37,13 +26,13 @@ moon run tooling-content:validate
 
 ## Documentation discipline
 
-- Product docs live in `docs/product/`.
 - Language-agnostic architecture docs live in `docs/architecture/`.
-- Language-specific stacks live in `docs/stacks/`.
-- Before writing TypeScript code in `apps/` or `packages/`, **read `docs/stacks/typescript.md` first**.
-- Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
-- Before scaffolding anything new (app, package, config, tooling), **read `docs/architecture/boundaries.md`
+- Before planning or writing code, **read `docs/architecture/boundaries.md` and
+  `docs/stacks/coding-principles.md` first**.
+- Before planning or writing TypeScript code in `apps/` or `packages/`, **read `docs/stacks/typescript.md`
   first**.
+- Before planning or writing Python code in `apps/` or `packages/`, **read `docs/stacks/python.md` first**.
+- Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
 
 ## Tooling
 

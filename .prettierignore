@@ -1,5 +1,6 @@
 **/.DS_Store
 configs/python/**
+pnpm-lock.yaml
 
 # Generated / build output
 **/.svelte-kit/**

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema-jsonc.json",
+  "workspaces": {
+    "apps/*": {
+      "entry": ["bin/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx}", "bin/*.{ts,tsx}"],
+    },
+    "packages/*": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.{ts,tsx}"],
+    },
+    "tooling/*": {
+      "entry": ["src/index.ts", "plugin-module-boundaries/index.ts"],
+      "project": ["src/**/*.{ts,tsx}", "plugin-module-boundaries/**/*.ts"],
+    },
+    ".": {},
+  },
+  "moonrepo": true,
+  "tsx": true,
+  "vitest": true,
+  "sveltekit": true,
+  "ignoreExportsUsedInFile": true,
+}

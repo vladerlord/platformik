@@ -1,0 +1,15 @@
+info:
+  name: GetWorkflowState
+  type: grpc
+  seq: 3
+
+grpc:
+  url: '{{serviceWorkflowsGrpcBaseUrl}}'
+  method: /platformik.workflows.v1.WorkflowsService/GetWorkflowRunView
+  methodType: unary
+  protoFilePath: ../../packages/contracts-workflows-proto/src/workflows.proto
+  message: |
+    {
+      "workflowRunId": ""
+    }
+  auth: inherit
