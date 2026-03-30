@@ -1,0 +1,16 @@
+{
+  "name": "@platformik/cli",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "ink": "catalog:",
+    "ink-select-input": "catalog:",
+    "ink-spinner": "catalog:",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:"
+  }
+}

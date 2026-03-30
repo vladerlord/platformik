@@ -31,14 +31,14 @@ const rule: Rule.RuleModule = {
     function check(source: string, node: Rule.Node): void {
       if (!source.startsWith(modulePrefix)) return
 
-      // source: "@platformik/module-iam-ts" or "@platformik/module-iam-ts/contracts"
-      const afterScope = source.slice(monorepoScope.length + 1) // "module-iam-ts" or "module-iam-ts/contracts"
+      // source: "@platformik/module-iam" or "@platformik/module-iam/contracts"
+      const afterScope = source.slice(monorepoScope.length + 1) // "module-iam" or "module-iam/contracts"
       const slashIdx = afterScope.indexOf('/')
 
       if (slashIdx === -1) return // bare package name — valid
 
-      const pkgDir = afterScope.slice(0, slashIdx) // "module-iam-ts"
-      const pkgName = `${monorepoScope}/${pkgDir}` // "@platformik/module-iam-ts"
+      const pkgDir = afterScope.slice(0, slashIdx) // "module-iam"
+      const pkgName = `${monorepoScope}/${pkgDir}` // "@platformik/module-iam"
       const subpath = afterScope.slice(slashIdx + 1) // "src/domain/user" or "contracts"
 
       // Self-import exemption: importing file is inside the same module package

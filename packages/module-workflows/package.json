@@ -1,0 +1,18 @@
+{
+  "name": "@platformik/module-workflows",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/module.ts",
+  "module": "./src/module.ts",
+  "types": "./src/module.ts",
+  "exports": {
+    ".": "./src/module.ts",
+    "./contracts": "./src/contracts.ts"
+  },
+  "dependencies": {
+    "kysely": "catalog:",
+    "neverthrow": "catalog:",
+    "uuidv7": "catalog:"
+  }
+}

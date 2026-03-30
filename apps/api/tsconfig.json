@@ -1,0 +1,9 @@
+{
+  "extends": "../../configs/typescript/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "composite": true,
+    "declaration": true
+  },
+  "include": ["src", "bin"]
+}

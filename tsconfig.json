@@ -2,15 +2,12 @@
   "extends": "./configs/typescript/tsconfig.base.json",
   "files": [],
   "references": [
-    { "path": "./apps/api-platform-ts" },
-    { "path": "./apps/web-platform-ts" },
-    { "path": "./packages/contracts-auth-ts" },
-    { "path": "./packages/lib-logger-ts" },
-    { "path": "./packages/module-iam-ts" },
-    { "path": "./packages/runtime-fastify-ts" },
-    { "path": "./packages/runtime-pg-ts" },
-    { "path": "./packages/runtime-pino-ts" },
-    { "path": "./tooling/dep-policy" },
-    { "path": "./tooling/eslint" }
+    { "path": "./apps/api" },
+    { "path": "./apps/cli" },
+    { "path": "./apps/worker" },
+    { "path": "./packages/contracts-event-bus" },
+    { "path": "./packages/lib-logger" },
+    { "path": "./packages/module-iam" },
+    { "path": "./packages/module-workflows" }
   ]
 }

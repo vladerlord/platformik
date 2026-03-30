@@ -16,7 +16,7 @@ The monorepo already contains:
 
 | Path                                   | Role                                                           |
 | -------------------------------------- | -------------------------------------------------------------- |
-| `apps/service-workflows-ts`            | gRPC backend — Temporal orchestrator for workflow execution    |
+| `apps/worker`                          | gRPC backend — Temporal orchestrator for workflow execution    |
 | `packages/contracts-workflows-proto`   | Proto source for `WorkflowsService`                            |
 | `packages/contracts-workflows-ts`      | Generated TypeScript client/server stubs                       |
 | `packages/module-workflows-ts`         | Business logic module (workflow definitions, DB access)        |
@@ -33,8 +33,8 @@ layer.
 This task intentionally removes AI and client-side streaming from scope. The objective is to establish a
 simple, correct foundation for:
 
-- Temporal orchestration in `apps/service-workflows-ts`
-- installable CLI client in `apps/cli-platform-ts`
+- Temporal orchestration in `apps/worker`
+- installable CLI client in `apps/cli`
 - PostgreSQL-backed workflow history
 - internal async event delivery for future workers and integrations
 
@@ -45,7 +45,7 @@ The canonical state for workflow execution and user-visible history lives in Pos
 
 ## Goal
 
-Build a typed TypeScript console application (`apps/cli-platform-ts`) that lets a developer:
+Build a typed TypeScript console application (`apps/cli`) that lets a developer:
 
 1. List available workflows (`/workflows`)
 2. Start a workflow run (`/start <workflow-id>`)
@@ -112,7 +112,7 @@ There is no replay of transient events because there are no transient client eve
 Low-frequency commands:
 
 ```
-CLI ──gRPC unary──► bff-cli-platform-ts ──gRPC unary──► service-workflows-ts ──► Temporal
+CLI ──gRPC unary──► bff-cli-platform-ts ──gRPC unary──► worker ──► Temporal
 ```
 
 Examples:
@@ -128,7 +128,7 @@ Examples:
 Canonical state and history:
 
 ```
-service-workflows-ts ──writes──► PostgreSQL (platformik_workflows)
+worker ──writes──► PostgreSQL (platformik_workflows)
 ```
 
 Persisted entities:
@@ -144,7 +144,7 @@ Persisted entities:
 Internal event delivery only:
 
 ```
-service-workflows-ts ──publish──► event_outbox (PostgreSQL)
+worker ──publish──► event_outbox (PostgreSQL)
                                      │
                               dispatcher worker
                                      │
@@ -182,8 +182,8 @@ Responsibilities:
 
 - Implements a gRPC server exposing `BffCliPlatformService`
 - Authenticates CLI requests via `module-iam-ts` using `Authorization: Bearer <token>` metadata
-- Resolves authenticated `user_id` and injects `AuthContext` into outbound calls to `service-workflows-ts`
-- Proxies unary calls to `service-workflows-ts`
+- Resolves authenticated `user_id` and injects `AuthContext` into outbound calls to `worker`
+- Proxies unary calls to `worker`
 - Verifies run ownership before returning workflow views or accepting answers
 - Keeps no authoritative workflow state locally
 
@@ -193,7 +193,7 @@ Implementation notes:
 - Follow repo TypeScript conventions with `neverthrow`
 - Use `ts-pattern` when mapping errors to gRPC status codes
 
-### Create `apps/cli-platform-ts`
+### Create `apps/cli`
 
 TypeScript console application.
 
@@ -242,7 +242,7 @@ service WorkflowsService {
 }
 ```
 
-### `apps/service-workflows-ts`
+### `apps/worker`
 
 Extend the service from a pure workflow runner into the owner of persisted workflow interaction state.
 
@@ -255,7 +255,7 @@ Responsibilities added in this task:
 - publish internal events from the outbox to Redis Streams after commit
 - serve `GetWorkflowRunView` from PostgreSQL-backed read models
 
-`service-workflows-ts` remains the only writer to `platformik_workflows`.
+`worker` remains the only writer to `platformik_workflows`.
 
 ---
 
@@ -566,7 +566,7 @@ Use Redis Streams as an internal event bus only.
 
 ### Publication model
 
-- `service-workflows-ts` writes domain state and `event_outbox` rows in one PostgreSQL transaction
+- `worker` writes domain state and `event_outbox` rows in one PostgreSQL transaction
 - a dispatcher publishes pending rows to Redis Streams after commit
 - after successful publish, the dispatcher marks the outbox row as published
 
@@ -620,7 +620,7 @@ The BFF must verify that the requested `workflow_run_id` belongs to the authenti
 Verification flow:
 
 1. Resolve `user_id` from session token
-2. Call `GetWorkflowRunView` on `service-workflows-ts` with `AuthContext`
+2. Call `GetWorkflowRunView` on `worker` with `AuthContext`
 3. If not found or not owned by the user, return `PERMISSION_DENIED`
 4. Only authorized users can read or mutate a workflow run
 
@@ -693,8 +693,8 @@ The CLI does not render from `NodeType` directly.
 When the user selects an option:
 
 1. CLI calls `SubmitAnswer`
-2. `service-workflows-ts` persists the user answer as a `messages` row with `role=user`
-3. `service-workflows-ts` advances the run
+2. `worker` persists the user answer as a `messages` row with `role=user`
+3. `worker` advances the run
 4. CLI resumes polling
 
 The client must not invent local-only messages that do not exist in PostgreSQL.
@@ -718,7 +718,7 @@ There is no special resume cursor beyond persisted `id` and `revision`.
 
 The transactional outbox removes the DB-commit / Redis-publish gap:
 
-- if `service-workflows-ts` crashes after commit, the outbox row remains pending
+- if `worker` crashes after commit, the outbox row remains pending
 - the dispatcher retries publication later
 - even if event publication is delayed, `GetWorkflowRunView` still returns correct persisted state
 
@@ -780,7 +780,7 @@ simple and correct.
 - Validate:
   - `moon run contracts-workflows-proto:validate`
   - `moon run contracts-workflows-ts:validate`
-  - `moon run service-workflows-ts:validate`
+  - `moon run worker:validate`
 
 ### Step 2 — Create `packages/contracts-cli-platform-proto` and `packages/contracts-cli-platform-ts`
 
@@ -800,11 +800,11 @@ simple and correct.
 - Add `event_outbox`
 - Extend `workflow_runs` with `conversation_id`, `current_node_id`, `revision`, `updated_at`
 - Generate all new entity IDs as `UUIDv7` in application code before inserting rows
-- Export any new public contracts required by `service-workflows-ts`
+- Export any new public contracts required by `worker`
 - Validate:
   - `moon run module-workflows-ts:validate`
 
-### Step 4 — Extend `apps/service-workflows-ts`
+### Step 4 — Extend `apps/worker`
 
 - Persist conversation state and run history in PostgreSQL
 - Implement `GetWorkflowRunView`
@@ -814,8 +814,8 @@ simple and correct.
 - Write outbox rows transactionally with domain updates
 - Add an outbox dispatcher that publishes to Redis Streams
 - Validate:
-  - `moon run service-workflows-ts:fix`
-  - `moon run service-workflows-ts:validate`
+  - `moon run worker:fix`
+  - `moon run worker:validate`
 
 ### Step 5 — Create `apps/bff-cli-platform-ts`
 
@@ -827,7 +827,7 @@ simple and correct.
   - `moon run bff-cli-platform-ts:fix`
   - `moon run bff-cli-platform-ts:validate`
 
-### Step 6 — Create `apps/cli-platform-ts`
+### Step 6 — Create `apps/cli`
 
 - Implement login flow
 - Implement REPL commands `/workflows`, `/start`, `/attach`
@@ -836,13 +836,13 @@ simple and correct.
 - Track `last_message_id` and `last_run_revision`
 - Resume by reloading the persisted state
 - Validate:
-  - `moon run cli-platform-ts:fix`
-  - `moon run cli-platform-ts:validate`
+  - `moon run cli:fix`
+  - `moon run cli:validate`
 
 ### Step 7 — Integration smoke test
 
-- Start PostgreSQL, Redis, `service-workflows-ts`, and `bff-cli-platform-ts`
-- Run `apps/cli-platform-ts --login <email> --password <pass>`
+- Start PostgreSQL, Redis, `worker`, and `bff-cli-platform-ts`
+- Run `apps/cli --login <email> --password <pass>`
 - Verify:
   - login succeeds with seeded dev credentials
   - `/workflows` returns seeded workflows
@@ -860,7 +860,7 @@ simple and correct.
 
 | Invariant                                         | Enforced by                                                     |
 | ------------------------------------------------- | --------------------------------------------------------------- |
-| PostgreSQL is the source of truth                 | `service-workflows-ts` persisted read models                    |
+| PostgreSQL is the source of truth                 | `worker` persisted read models                                  |
 | Redis is not a client transport                   | no `WatchWorkflowRun`, no SSE/WebSocket in this task            |
 | Conversation history is product-facing state      | `messages` table                                                |
 | Execution history is not the UI timeline          | `run_events` table                                              |

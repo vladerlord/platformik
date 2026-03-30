@@ -12,22 +12,22 @@
 
 ## Context
 
-Current SSE implementation in `apps/api-platform-ts/src/routes/workflows.ts` uses server-side polling:
+Current SSE implementation in `apps/api/src/routes/workflows.ts` uses server-side polling:
 
-- every second `api-platform-ts` calls `GetWorkflowRunView` on `service-workflows-ts`;
+- every second `api` calls `GetWorkflowRunView` on `worker`;
 - each active SSE connection creates recurring gRPC load;
 - this does not scale for production concurrency.
 
 The repo already has internal event bus foundations:
 
-- `service-workflows-ts` writes outbox rows and publishes to Redis Streams;
+- `worker` writes outbox rows and publishes to Redis Streams;
 - topics already emitted include:
   - `workflow.run.started`
   - `workflow.message.created`
   - `workflow.answer.received`
   - `workflow.run.completed`
 
-Gap to close: `api-platform-ts` still polls instead of consuming Redis events, and failure flow is incomplete
+Gap to close: `api` still polls instead of consuming Redis events, and failure flow is incomplete
 (`workflow.run.failed` is missing).
 
 ---
@@ -36,10 +36,10 @@ Gap to close: `api-platform-ts` still polls instead of consuming Redis events, a
 
 Implement end-to-end event-driven live updates for workflow runs:
 
-1. `service-workflows-ts` emits workflow progress events to Redis Streams (including failed terminal state).
-2. `api-platform-ts` subscribes to Redis Streams and uses events as triggers.
-3. `api-platform-ts` pushes updates to SSE clients without periodic polling loops.
-4. `cli-platform-ts` stops fallback polling and relies on SSE + reconnect.
+1. `worker` emits workflow progress events to Redis Streams (including failed terminal state).
+2. `api` subscribes to Redis Streams and uses events as triggers.
+3. `api` pushes updates to SSE clients without periodic polling loops.
+4. `cli` stops fallback polling and relies on SSE + reconnect.
 5. Keep HTTP/SSE public API unchanged.
 
 ---
@@ -57,7 +57,7 @@ Implement end-to-end event-driven live updates for workflow runs:
 
 ## Required Changes
 
-### 1) `apps/service-workflows-ts`
+### 1) `apps/worker`
 
 Implement explicit run failure lifecycle and event emission.
 
@@ -80,7 +80,7 @@ Implement explicit run failure lifecycle and event emission.
 
 ---
 
-### 2) `apps/api-platform-ts`
+### 2) `apps/api`
 
 Replace SSE polling loop with Redis-triggered hydrate flow.
 
@@ -135,7 +135,7 @@ Public SSE event types remain unchanged:
 
 ---
 
-### 3) `apps/cli-platform-ts`
+### 3) `apps/cli`
 
 Remove safety polling from run hook.
 
@@ -167,7 +167,7 @@ Update architecture docs to match implementation:
 
 ## Acceptance Criteria
 
-1. `api-platform-ts` no longer calls `GetWorkflowRunView` on a fixed interval inside SSE streaming.
+1. `api` no longer calls `GetWorkflowRunView` on a fixed interval inside SSE streaming.
 2. Live updates are triggered by Redis stream events.
 3. Workflow failures produce:
    - DB status `failed`,

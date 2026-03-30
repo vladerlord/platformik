@@ -29,10 +29,8 @@ moon run tooling-content:validate
 - Language-agnostic architecture docs live in `docs/architecture/`.
 - Before planning or writing code, **read `docs/architecture/boundaries.md` and
   `docs/stacks/coding-principles.md` first**.
-- Before planning or writing TypeScript code in `apps/` or `packages/`, **read `docs/stacks/typescript.md`
-  first**.
-- Before planning or writing Python code in `apps/` or `packages/`, **read `docs/stacks/python.md` first**.
-- Keep docs consistent with naming (`platformik`, `@platformik/*`, `platformik_*`).
+- Before planning or writing code in `apps/` or `packages/`, read `docs/stacks/typescript.md` first.
+- Keep docs consistent with naming (`platformik`, `@platformik/*`).
 
 ## Tooling
 

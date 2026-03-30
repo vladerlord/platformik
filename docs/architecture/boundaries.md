@@ -9,143 +9,82 @@ designed to be fast for humans to scan and deterministic for tooling/agents to p
 
 - Rules are language-agnostic and apply across the monorepo.
 - Source-level cross-language imports are forbidden (for example, TypeScript importing Python source).
-- Cross-language integration must happen via network APIs (HTTP/gRPC) and/or language-neutral schemas/IDL +
-  generated artifacts.
-
-## Programming languages and schemas
-
-- `<lang>`:
-  - `ts` - TypeScript
-  - `py` - Python
-  - `go` - Go
-  - `rs` - Rust
-  - `kt` - Kotlin
-  - `sw` - Swift
-- `<schema>`:
-  - `proto` - Protocol Buffers
-  - `jsonschema` - JSON Schema
-
-A package uses either `<lang>` (executable code) or `<schema>` (codegen source of truth), never both. `<lang>`
-packages have runtime dependencies, tests, and build steps. `<schema>` packages contain only schema files and
-codegen configuration.
 
 ## Naming Inputs (Classification Tokens)
 
 ### Apps
 
-- `apps/<client>-<name>-<lang>`
-- `apps/api-<name>-<lang>`
-- `apps/service-<name>-<lang>`
-- `apps/worker-<name>-<lang>`
-
-- `<client>`:
-  - `web`: browser UI entrypoint
-  - `cli`: installable client/tool that talks to a backend
-  - `android|ios|macos`: native client apps
-- `<name>`: deployable identifier (may include qualifiers)
 - `api`: public backend entrypoint for client-facing HTTP APIs and SSE streams
+- `cli`: TUI tool for testing workflows
+- `web`: browser UI entrypoint
 - `worker`: async/background processing entrypoint (RabbitMQ consumers, Temporal workers)
-- `service`: private backend entrypoint (HTTP/gRPC server)
 
-Apps own process lifecycle: they initialize and gracefully close `runtime` and `vendor` resources. Apps are
-the orchestration layer — they wire modules together and compose cross-module logic.
-
-Examples:
-
-- `apps/web-platform-ts`
-- `apps/cli-platform-ts`
-- `apps/api-platform-ts`
-- `apps/service-workflows-ts`
-- `apps/service-ai-py`
-- `apps/worker-flow-runner-ts`
-- `apps/worker-events-ts`
-- `apps/cli-agent-rs`
+Apps own process lifecycle: they initialize and gracefully close `lib` and `sdk` resources. Apps are the
+orchestration layer — they wire modules together and compose cross-module logic.
 
 ### Packages
 
-`packages/<role>-<name>-<lang|schema>`
+`packages/<role>-<name>`
 
 - `<role>`:
   - `module`:
     - self-contained business capability (bounded context)
     - owns domain model, persistence, adapters, use cases, and migrations
-    - exports: public contracts (types, schemas, interfaces) via `./contracts`, a module factory function via
-      `.` main entry
-    - internal structure is at the author's discretion: simple modules may be flat, complex modules may use
-      ports/adapters/domain layers internally
+    - exports public API only through explicit `package.json` `exports` entry points:
+      - `"."` — module runtime/factory entry point, imported only by apps for wiring
+      - `"./contracts"` — public types, zod schemas, interfaces
+      - optional `"./migrations"` — migration definitions only
+    - all public entry points must target files inside `src/public/`
+    - internal structure is implementation detail
     - modules never import other modules — cross-module composition happens in apps
   - `contracts`:
-    - shared cross-boundary schemas not owned by any single module
-    - `<lang>` variant: executable schemas (e.g. zod DTOs shared between an API app and a web client)
-    - `<schema>` variant: language-neutral IDL for codegen (e.g. protobuf for gRPC); contains only schema
-      files — generated code goes into `<lang>` packages
+    - shared TypeScript types/`zod` schemas/interfaces for integration between `apps/*` and `module-*`
     - no domain logic, no business rules
   - `lib`:
-    - pure cross-cutting technical utilities; zero IO
-    - external dependencies limited to pure computational libraries (no IO, no SDKs)
-    - examples: fp helpers (neverthrow wrappers), retry policies, Result type combinators
-    - may wrap and re-export pure external libraries (e.g. `lib-fp-ts` wraps `neverthrow`)
-    - NOT for business domain types (those belong inside modules)
-  - `runtime`:
-    - instantiable infrastructure runtimes and their lifecycle management (start/stop)
-    - examples: Postgres pool, Redis client, RabbitMQ connection, Temporal worker/client bootstrap, Pino
-      logger, Fastify server
-    - shared infrastructure — not owned by any business module
-  - `vendor`:
+    - shared cross-cutting technical libraries and adapters
+    - may include pure utilities, infrastructure adapters, and wrappers over third-party libraries
+    - examples: fp helpers, retry policies, logger adapters, postgres pool factories, fastify bootstrap
+    - may wrap and re-export external libraries (e.g. `lib-fp`, `lib-pino`, `lib-fastify`, `lib-pg`)
+    - no domain logic, no business rules
+  - `sdk`:
     - wrappers/clients for external vendors/providers (e.g. Amazon S3, OpenAI, Anthropic, Stripe)
     - thin clients only; persistence or caching for vendor state lives inside modules
 - `<name>`: namespace / ownership unit
   - business: `iam`, `billing`, `flow-store`, `chat`, `secrets`
   - cross-cutting: `fp`, `logger`, `ai` (for contracts)
   - infrastructure: `postgres`, `redis`, `pino`, `fastify`, `temporal`, `rabbitmq`
-- `<lang|schema>`
 
 Examples:
 
-- `packages/module-iam-ts`
-- `packages/module-flow-store-ts`
-- `packages/module-chat-ts`
-- `packages/module-secrets-ts`
-- `packages/contracts-platform-api-ts`
-- `packages/contracts-auth-proto`
-- `packages/contracts-auth-ts`
-- `packages/contracts-auth-py`
-- `packages/contracts-cli-api-ts`
-- `packages/contracts-ai-proto`
-- `packages/contracts-ai-ts`
-- `packages/lib-fp-ts`
-- `packages/lib-logger-ts`
-- `packages/runtime-postgres-ts`
-- `packages/runtime-pino-ts`
-- `packages/runtime-fastify-ts`
-- `packages/runtime-temporal-ts`
-- `packages/runtime-rabbitmq-ts`
-- `packages/runtime-redis-ts`
-- `packages/vendor-openai-ts`
-- `packages/vendor-stripe-ts`
+- `packages/module-iam`
+- `packages/module-flow-store`
+- `packages/module-chat`
+- `packages/module-secrets`
+- `packages/contracts-auth`
+- `packages/contracts-ai`
+- `packages/lib-fp`
+- `packages/lib-logger`
+- `packages/sdk-openai`
+- `packages/sdk-stripe`
 
 ## Module Exports Convention
 
-Modules expose these public entry points via `package.json` `exports` field:
+Modules expose public API only via the `package.json` `exports` field:
 
-- `"."` → `src/module.ts` — factory function, imported only by apps for wiring
-- `"./contracts"` → `src/contracts.ts` — public types, interfaces, zod schemas
+- `"."` — module runtime/factory entry point, imported only by apps for wiring
+- `"./contracts"` — public types, interfaces, and zod schemas
+- optional `"./migrations"` — migration definitions only
 
-Everything else inside `src/` is internal implementation and must not be imported from outside. Migration
+All module public entry points must target files inside `src/public/`.
+
+Everything outside `src/public/` is internal implementation and must not be imported from outside. Migration
 execution, connection lifecycle, and DSN/env handling remain app-owned even when migration definitions are
 exported by modules.
 
-## Codegen (proto → lang)
-
-`<schema>` packages are inputs to codegen tooling. Generated artifacts are committed to the repository and
-land in dedicated `<lang>` packages — one per target language. Generated code always goes into a dedicated
-`contracts-<name>-<lang>` package.
-
 ## Configs
 
-`configs/<scope>/<config>`
+`configs/<lang>/<config>`
 
-- `<scope>`: `<lang>|tools`
 - `<config>`: shared tool config files referenced from packages (via extends/include)
 
 ## Tooling
@@ -157,48 +96,24 @@ land in dedicated `<lang>` packages — one per target language. Generated code 
 
 ## Dependency flow
 
-- `app`: `lib`, `module`, `contracts`, `runtime`, `vendor`
-- `module`: `lib`, `contracts`, `runtime`, `vendor`
+- `app`: `lib`, `module`, `contracts`, `sdk`
+- `module`: `lib`, `contracts`, `sdk`
 - `contracts`: `lib`
 - `lib`: `lib`
-- `runtime`: `lib`
-- `vendor`: `lib`
-
-Schema packages (`proto`, `jsonschema`) do not participate in the runtime dependency graph. They are inputs to
-codegen tooling only.
-
-## Architectural Conventions
-
-- **Module isolation**: Modules never import other modules. Cross-module composition happens exclusively in
-  apps via dependency injection.
-- **Module internals protection**: Outside consumers may only import from a module's `"."`, `"./contracts"`,
-  and optional `"./migrations"` exports. Direct imports of internal paths (e.g.
-  `module-iam-ts/src/adapters/...`) are forbidden. Enforced by ESLint at the source-code level.
-- **Shared contracts scope**: `contracts` packages exist for cross-boundary schemas that are not owned by any
-  single module (e.g. REST API schemas shared between an API app and a web client, or protobuf definitions for
-  cross-language gRPC).
-- **Cross-language boundary**: TypeScript and Python communicate via gRPC (with streaming support). Rust CLI
-  communicates with API apps via HTTP. No source-level imports across languages.
+- `sdk`: `lib`
 
 ## External dependency policy
 
-| Role        | Policy    | Detail                                              |
-| ----------- | --------- | --------------------------------------------------- |
-| `lib`       | allow     | Pure computational libraries only (no IO, no SDKs). |
-| `module`    | allow_any | Self-contained — manages own dependencies.          |
-| `contracts` | allow     | Schema/validation libraries only (e.g. zod for TS). |
-| `runtime`   | allow_any | Infrastructure clients by definition.               |
-| `vendor`    | allow_any | External SDK wrappers by definition.                |
-| `app`       | allow_any | Wiring layer — unrestricted.                        |
-
-Allowed package lists for `lib` and `contracts` are maintained in `tooling/dep-policy/policy.yaml`.
-
-Enforcement: `tooling/dep-policy/`
+| Role        | Policy    | Detail                                                    |
+| ----------- | --------- | --------------------------------------------------------- |
+| `lib`       | allow_any | Shared technical code, including infrastructure adapters. |
+| `module`    | allow_any | Self-contained — manages own dependencies.                |
+| `contracts` | allow     | Schema/validation libraries only (e.g. zod for TS).       |
+| `sdk`       | allow_any | External SDK wrappers by definition.                      |
+| `app`       | allow_any | Wiring layer — unrestricted.                              |
 
 ## Enforcement Mapping
 
-- Dependency flow + external dependency policy:
-  - `tooling/dep-policy/policy.yaml`
 - Module internals protection (import paths):
   - `tooling/eslint/`
 
@@ -207,5 +122,4 @@ Enforcement: `tooling/dep-policy/`
 Any boundary change must update all of the following in one change set:
 
 1. This document (dependency flow, roles, and/or examples).
-2. `tooling/dep-policy/policy.yaml`.
-3. Related enforcement tooling configs and tests.
+2. Related enforcement tooling configs and tests.

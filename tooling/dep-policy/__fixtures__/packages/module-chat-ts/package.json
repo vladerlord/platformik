@@ -1,7 +1,0 @@
-{
-  "name": "@platformik/module-chat-ts",
-  "dependencies": {
-    "@platformik/module-iam-ts": "workspace:*",
-    "@platformik/runtime-postgres-ts": "workspace:*"
-  }
-}

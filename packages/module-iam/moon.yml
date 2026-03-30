@@ -1,0 +1,3 @@
+id: module-iam
+language: typescript
+layer: library
