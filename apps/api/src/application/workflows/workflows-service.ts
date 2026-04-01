@@ -116,7 +116,7 @@ export function createWorkflowsService(params: {
 
   return {
     async listWorkflows(context) {
-      const result = await workflows.listWorkflows(context.userId)
+      const result = await workflows.catalog.list(context.userId)
       const workflowList = throwIfError(result)
 
       return {
@@ -128,10 +128,10 @@ export function createWorkflowsService(params: {
     },
 
     async startWorkflow({ workflowId, context }) {
-      const schemaResult = await workflows.getWorkflowSchema(workflowId)
+      const schemaResult = await workflows.catalog.getSchema(workflowId)
       const schema = throwIfError(schemaResult)
 
-      const conversationResult = await workflows.createConversation({ userId: context.userId })
+      const conversationResult = await workflows.conversations.create({ userId: context.userId })
       const conversation = throwIfError(conversationResult)
 
       const workflowRunId = uuidv7()
@@ -142,7 +142,7 @@ export function createWorkflowsService(params: {
         args: [schema],
       })
 
-      const insertResult = await workflows.insertWorkflowRun({
+      const insertResult = await workflows.runs.create({
         id: workflowRunId,
         workflowId,
         userId: context.userId,
@@ -151,7 +151,7 @@ export function createWorkflowsService(params: {
       })
       throwIfError(insertResult)
 
-      const runEventResult = await workflows.insertRunEvent({
+      const runEventResult = await workflows.events.append({
         runId: workflowRunId,
         sequence: 1,
         type: 'run_started',
@@ -159,7 +159,7 @@ export function createWorkflowsService(params: {
       })
       throwIfError(runEventResult)
 
-      const outboxResult = await workflows.insertEventOutboxEntry({
+      const outboxResult = await workflows.outbox.enqueue({
         topic: 'workflow.run.started',
         payload: {
           runId: workflowRunId,
@@ -178,14 +178,14 @@ export function createWorkflowsService(params: {
     },
 
     async getWorkflowRunView({ workflowRunId, afterId, context }) {
-      const runResult = await workflows.getWorkflowRun(workflowRunId)
+      const runResult = await workflows.runs.get(workflowRunId)
       const run = throwIfError(runResult)
       if (run.userId !== context.userId) {
         throw new WorkflowsServiceError(403, 'PERMISSION_DENIED', 'Access denied')
       }
 
       const viewParams = afterId !== undefined ? { runId: workflowRunId, afterId } : { runId: workflowRunId }
-      const viewResult = await workflows.getWorkflowRunView(viewParams)
+      const viewResult = await workflows.runs.getView(viewParams)
       const view = throwIfError(viewResult)
 
       const messages: WorkflowMessage[] = view.messages.map((message) => ({
@@ -230,7 +230,7 @@ export function createWorkflowsService(params: {
     },
 
     async submitAnswer({ workflowRunId, selectOption, context }) {
-      const runResult = await workflows.getWorkflowRun(workflowRunId)
+      const runResult = await workflows.runs.get(workflowRunId)
       const run = throwIfError(runResult)
 
       if (run.userId !== context.userId) {
@@ -269,7 +269,7 @@ export function createWorkflowsService(params: {
       const selectedIndex = state.pendingOptions.indexOf(selectedLabel)
       const optionId = selectedIndex >= 0 ? String(selectedIndex + 1) : rawValue
 
-      const messageResult = await workflows.insertMessage({
+      const messageResult = await workflows.messages.create({
         conversationId: run.conversationId,
         runId: workflowRunId,
         role: 'user',
@@ -288,7 +288,7 @@ export function createWorkflowsService(params: {
         .executeTakeFirst()
       const nextSequence = Number(maxSequenceRow?.max_sequence ?? 0) + 1
 
-      const runEventResult = await workflows.insertRunEvent({
+      const runEventResult = await workflows.events.append({
         runId: workflowRunId,
         sequence: nextSequence,
         type: 'answer_received',
@@ -296,7 +296,7 @@ export function createWorkflowsService(params: {
       })
       throwIfError(runEventResult)
 
-      const outboxResult = await workflows.insertEventOutboxEntry({
+      const outboxResult = await workflows.outbox.enqueue({
         topic: 'workflow.answer.received',
         payload: { runId: workflowRunId, messageId: message.id, optionId, label: selectedLabel },
       })

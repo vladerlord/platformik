@@ -1,7 +1,8 @@
 import type { Kysely } from 'kysely'
 import { ResultAsync } from 'neverthrow'
 import { uuidv7 } from 'uuidv7'
-import type { ConversationRow, WorkflowsError } from '../contracts'
+import type { WorkflowsError } from '../public/contracts/errors'
+import type { ConversationRow } from '../public/contracts/rows'
 import type { WorkflowsDatabase } from '../db/schema'
 
 export function createConversation(

@@ -1,7 +1,8 @@
 import type { Kysely } from 'kysely'
 import { ResultAsync } from 'neverthrow'
 import { uuidv7 } from 'uuidv7'
-import type { EventOutboxRow, WorkflowsError } from '../contracts'
+import type { WorkflowsError } from '../public/contracts/errors'
+import type { EventOutboxRow } from '../public/contracts/rows'
 import type { WorkflowsDatabase } from '../db/schema'
 
 export function insertEventOutboxEntry(

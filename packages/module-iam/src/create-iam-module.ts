@@ -1,5 +1,5 @@
 import { createInternalIamAuth } from './auth/auth'
-import type { IamModule, IamModuleDeps } from './contracts'
+import type { IamModule, IamModuleDeps } from './public/contracts/api'
 
 export const createIamModule = (deps: IamModuleDeps): IamModule => {
   const auth = createInternalIamAuth(deps)
@@ -8,5 +8,3 @@ export const createIamModule = (deps: IamModuleDeps): IamModule => {
     auth,
   }
 }
-
-export { iamMigrations } from './migrations'

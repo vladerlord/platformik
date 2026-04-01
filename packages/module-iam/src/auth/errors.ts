@@ -5,7 +5,7 @@ import type {
   SignInError,
   SignOutError,
   SignUpError,
-} from '../contracts'
+} from '../public/contracts/auth'
 
 const betterAuthErrorSchema = z.object({
   body: z.object({

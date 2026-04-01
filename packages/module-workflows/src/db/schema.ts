@@ -1,5 +1,6 @@
 import type { ColumnType, Generated, JSONColumnType } from 'kysely'
-import type { FlowDefinition, MessageContent } from '../contracts'
+import type { FlowDefinition } from '../public/contracts/flow'
+import type { MessageContent } from '../public/contracts/messages'
 
 export interface WorkflowsTable {
   id: string

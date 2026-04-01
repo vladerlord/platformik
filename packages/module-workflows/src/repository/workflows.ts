@@ -1,6 +1,7 @@
 import type { Kysely } from 'kysely'
 import { ResultAsync, err, ok } from 'neverthrow'
-import type { FlowDefinition, WorkflowSummary, WorkflowsError } from '../contracts'
+import type { WorkflowsError } from '../public/contracts/errors'
+import type { FlowDefinition, WorkflowSummary } from '../public/contracts/flow'
 import type { WorkflowsDatabase } from '../db/schema'
 
 export function listWorkflows(

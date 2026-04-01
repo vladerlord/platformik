@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "main": "./src/module.ts",
-  "module": "./src/module.ts",
-  "types": "./src/module.ts",
+  "main": "./src/public/module.ts",
+  "module": "./src/public/module.ts",
+  "types": "./src/public/module.ts",
   "exports": {
-    ".": "./src/module.ts",
-    "./contracts": "./src/contracts.ts"
+    ".": "./src/public/module.ts",
+    "./contracts": "./src/public/contracts/index.ts",
+    "./migrations": "./src/public/migrations.ts"
   },
   "dependencies": {
     "@better-auth/kysely-adapter": "catalog:",

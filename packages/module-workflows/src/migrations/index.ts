@@ -1,4 +1,4 @@
-import type { WorkflowsMigrations } from '../contracts'
+import type { WorkflowsMigrations } from '../public/migrations'
 import type { WorkflowsDatabase } from '../db/schema'
 import { initialMigration } from './0001_initial'
 import { workflowInteractionMigration } from './0002_workflow_interaction'

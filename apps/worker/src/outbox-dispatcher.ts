@@ -13,7 +13,7 @@ export function startOutboxDispatcher(container: Container): () => Promise<void>
   let currentTick: Promise<void> = Promise.resolve()
 
   const tick = async (): Promise<void> => {
-    const result = await workflows.getPendingOutboxEntries(BATCH_SIZE)
+    const result = await workflows.outbox.listPending(BATCH_SIZE)
     if (result.isErr()) {
       logger.error({ err: result.error }, 'Failed to fetch pending outbox entries')
 
@@ -38,7 +38,7 @@ export function startOutboxDispatcher(container: Container): () => Promise<void>
           'Invalid workflow event envelope, skipping outbox entry',
         )
 
-        const incementResult = await workflows.incrementOutboxAttempts(entry.id)
+        const incementResult = await workflows.outbox.incrementAttempts(entry.id)
         if (incementResult.isErr()) {
           logger.error(
             { err: incementResult.error, entryId: entry.id },
@@ -56,7 +56,7 @@ export function startOutboxDispatcher(container: Container): () => Promise<void>
           { err, entryId: entry.id, topic: entry.topic },
           'Failed to publish outbox entry to JetStream — will retry',
         )
-        const incementResult = await workflows.incrementOutboxAttempts(entry.id)
+        const incementResult = await workflows.outbox.incrementAttempts(entry.id)
         if (incementResult.isErr()) {
           logger.error(
             { err: incementResult.error, entryId: entry.id },
@@ -67,7 +67,7 @@ export function startOutboxDispatcher(container: Container): () => Promise<void>
       }
 
       // Mark as published — publish already succeeded, so at-least-once delivery applies if this fails
-      const markResult = await workflows.markOutboxEntryPublished(entry.id)
+      const markResult = await workflows.outbox.markPublished(entry.id)
       if (markResult.isErr()) {
         logger.error(
           { err: markResult.error, entryId: entry.id },

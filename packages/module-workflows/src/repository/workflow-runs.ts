@@ -1,15 +1,10 @@
 import type { Kysely } from 'kysely'
 import { ResultAsync, err, ok } from 'neverthrow'
 import { uuidv7 } from 'uuidv7'
-import type {
-  MessageContent,
-  MessageRole,
-  MessageRow,
-  WorkflowRunRow,
-  WorkflowRunStatus,
-  WorkflowRunView,
-  WorkflowsError,
-} from '../contracts'
+import type { MessageContent, MessageRole } from '../public/contracts/messages'
+import type { WorkflowsError } from '../public/contracts/errors'
+import type { MessageRow } from '../public/contracts/rows'
+import type { WorkflowRunRow, WorkflowRunStatus, WorkflowRunView } from '../public/contracts/runs'
 import type { WorkflowsDatabase } from '../db/schema'
 
 export function insertWorkflowRun(

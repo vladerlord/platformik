@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import svelte from 'eslint-plugin-svelte'
+import * as jsoncParser from 'jsonc-eslint-parser'
 import { defineConfig } from 'eslint/config'
 import moduleBoundaries from './plugin-module-boundaries.js'
 
@@ -63,6 +64,25 @@ export default defineConfig(
         },
       ],
       'module-boundaries/no-cross-package-relative': 'error',
+    },
+  },
+  {
+    files: ['**/package.json'],
+    languageOptions: {
+      parser: jsoncParser,
+    },
+    rules: {
+      '@typescript-eslint/consistent-type-imports': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-import-type-side-effects': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'newline-before-return': 'off',
+    },
+  },
+  {
+    files: ['**/packages/module-*/package.json'],
+    rules: {
+      'module-boundaries/enforce-module-exports': 'error',
     },
   },
 )

@@ -7,13 +7,13 @@ import type {
   SignInSuccessPayload,
   SignOutSuccessPayload,
   SignUpSuccessPayload,
-} from '../contracts'
+} from '../public/contracts/auth'
 import {
   sessionResultSchema,
   signInSuccessPayloadSchema,
   signOutSuccessPayloadSchema,
   signUpSuccessPayloadSchema,
-} from '../contracts'
+} from '../public/contracts/auth'
 import { toUnexpectedAuthError } from './errors'
 
 const betterAuthUserSchema = z.object({

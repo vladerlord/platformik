@@ -1,9 +1,5 @@
-import type { Kysely } from 'kysely'
 import type { Result } from 'neverthrow'
 import { z } from 'zod'
-import type { IamDatabase } from './db/schema'
-
-export type { IamDatabase } from './db/schema'
 
 export const signUpBodySchema = z.object({
   name: z.string().min(1),
@@ -114,27 +110,3 @@ export type SignInResult = Result<IamAuthSuccess<SignInSuccessPayload>, SignInEr
 export type SignOutResult = Result<IamAuthSuccess<SignOutSuccessPayload>, SignOutError>
 export type GetSessionSuccess = IamAuthSuccess<SessionResult | null>
 export type GetSessionResult = Result<GetSessionSuccess, GetSessionError>
-
-export type IamMigrations<TDb> = Record<
-  string,
-  {
-    up: (db: Kysely<TDb>) => Promise<void>
-    down: (db: Kysely<TDb>) => Promise<void>
-  }
->
-
-export type IamModule = {
-  auth: {
-    signUp: (body: SignUpBody, headers: Headers) => Promise<SignUpResult>
-    signIn: (body: SignInBody, headers: Headers) => Promise<SignInResult>
-    signOut: (headers: Headers) => Promise<SignOutResult>
-    getSession: (headers: Headers) => Promise<GetSessionResult>
-  }
-}
-
-export type IamModuleDeps = {
-  db: Kysely<IamDatabase>
-  baseUrl: string
-  authSecret: string
-  trustedOrigins: string[]
-}

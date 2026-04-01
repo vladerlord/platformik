@@ -12,13 +12,13 @@ export type ActivityOption = { id: string; label: string }
 
 export function createActivities(module: WorkflowsModule) {
   async function deliverMessage(runId: string, text: string, sequence: number): Promise<string> {
-    const runResult = await module.getWorkflowRun(runId)
+    const runResult = await module.runs.get(runId)
     if (runResult.isErr()) throw new Error(`Run not found: ${runId}`)
     const run = runResult.value
 
     if (!run.conversationId) throw new Error(`Run ${runId} has no conversation`)
 
-    const messageResult = await module.insertMessage({
+    const messageResult = await module.messages.create({
       id: deterministicMessageId(runId, sequence),
       conversationId: run.conversationId,
       runId,
@@ -29,7 +29,7 @@ export function createActivities(module: WorkflowsModule) {
       throw new Error(`Failed to insert message: ${JSON.stringify(messageResult.error)}`)
     }
 
-    const runEventResult = await module.insertRunEvent({
+    const runEventResult = await module.events.append({
       runId,
       sequence,
       type: 'message_created',
@@ -37,7 +37,7 @@ export function createActivities(module: WorkflowsModule) {
     })
     if (runEventResult.isErr()) throw new Error(`Failed to insert run event`)
 
-    const outboxResult = await module.insertEventOutboxEntry({
+    const outboxResult = await module.outbox.enqueue({
       topic: 'workflow.message.created',
       payload: { runId, messageId: messageResult.value.id, type: 'text' },
     })
@@ -54,13 +54,13 @@ export function createActivities(module: WorkflowsModule) {
     options: ActivityOption[],
     sequence: number,
   ): Promise<void> {
-    const runResult = await module.getWorkflowRun(runId)
+    const runResult = await module.runs.get(runId)
     if (runResult.isErr()) throw new Error(`Run not found: ${runId}`)
     const run = runResult.value
 
     if (!run.conversationId) throw new Error(`Run ${runId} has no conversation`)
 
-    const messageResult = await module.insertMessage({
+    const messageResult = await module.messages.create({
       id: deterministicMessageId(runId, sequence),
       conversationId: run.conversationId,
       runId,
@@ -74,7 +74,7 @@ export function createActivities(module: WorkflowsModule) {
     if (messageResult.isErr())
       throw new Error(`Failed to insert option_input message: ${JSON.stringify(messageResult.error)}`)
 
-    const runEventResult = await module.insertRunEvent({
+    const runEventResult = await module.events.append({
       runId,
       sequence,
       type: 'message_created',
@@ -82,7 +82,7 @@ export function createActivities(module: WorkflowsModule) {
     })
     if (runEventResult.isErr()) throw new Error(`Failed to insert run event`)
 
-    const outboxResult = await module.insertEventOutboxEntry({
+    const outboxResult = await module.outbox.enqueue({
       topic: 'workflow.message.created',
       payload: { runId, messageId: messageResult.value.id, type: 'option_input' },
     })
@@ -92,10 +92,10 @@ export function createActivities(module: WorkflowsModule) {
   }
 
   async function completeRun(runId: string, sequence: number): Promise<void> {
-    const completeResult = await module.completeWorkflowRun(runId, null)
+    const completeResult = await module.runs.complete(runId, null)
     if (completeResult.isErr()) throw new Error(`Failed to complete run: ${runId}`)
 
-    const runEventResult = await module.insertRunEvent({
+    const runEventResult = await module.events.append({
       runId,
       sequence,
       type: 'run_completed',
@@ -103,7 +103,7 @@ export function createActivities(module: WorkflowsModule) {
     })
     if (runEventResult.isErr()) throw new Error(`Failed to insert run_completed event`)
 
-    const outboxResult = await module.insertEventOutboxEntry({
+    const outboxResult = await module.outbox.enqueue({
       topic: 'workflow.run.completed',
       payload: { runId },
     })
@@ -113,10 +113,10 @@ export function createActivities(module: WorkflowsModule) {
   }
 
   async function failRun(runId: string, sequence: number, errorMessage: string): Promise<void> {
-    const failResult = await module.failWorkflowRun(runId, errorMessage)
+    const failResult = await module.runs.fail(runId, errorMessage)
     if (failResult.isErr()) throw new Error(`Failed to fail run: ${runId}`)
 
-    const runEventResult = await module.insertRunEvent({
+    const runEventResult = await module.events.append({
       runId,
       sequence,
       type: 'run_failed',
@@ -124,7 +124,7 @@ export function createActivities(module: WorkflowsModule) {
     })
     if (runEventResult.isErr()) throw new Error(`Failed to insert run_failed event`)
 
-    const outboxResult = await module.insertEventOutboxEntry({
+    const outboxResult = await module.outbox.enqueue({
       topic: 'workflow.run.failed',
       payload: { runId, errorMessage },
     })

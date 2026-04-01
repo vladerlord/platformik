@@ -1,4 +1,4 @@
-import type { IamMigrations } from '../contracts'
+import type { IamMigrations } from '../public/migrations'
 import type { IamDatabase } from '../db/schema'
 import { betterAuthCoreMigration } from './001-betterauth-core'
 

@@ -1,6 +1,6 @@
-import { iamMigrations } from '@platformik/module-iam'
+import { iamMigrations } from '@platformik/module-iam/migrations'
 import type { IamDatabase } from '@platformik/module-iam/contracts'
-import { workflowsMigrations } from '@platformik/module-workflows'
+import { workflowsMigrations } from '@platformik/module-workflows/migrations'
 import type { WorkflowsDatabase } from '@platformik/module-workflows/contracts'
 import { createPinoLogger } from '@platformik/lib-logger'
 import { Kysely, Migrator, PostgresDialect } from 'kysely'

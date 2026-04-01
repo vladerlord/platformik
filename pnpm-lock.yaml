@@ -78,6 +78,9 @@ catalogs:
     ink-spinner:
       specifier: ^5.0.0
       version: 5.0.0
+    jsonc-eslint-parser:
+      specifier: ^3.1.0
+      version: 3.1.0
     kysely:
       specifier: ^0.28.11
       version: 0.28.11
@@ -155,6 +158,9 @@ importers:
       globals:
         specifier: ^17.4.0
         version: 17.4.0
+      jsonc-eslint-parser:
+        specifier: 'catalog:'
+        version: 3.1.0
       knip:
         specifier: ^6.0.5
         version: 6.0.5
@@ -191,15 +197,9 @@ importers:
       '@fastify/sse':
         specifier: 'catalog:'
         version: 0.4.0(fastify@5.8.2)
-      '@platformik/contracts-auth':
-        specifier: workspace:*
-        version: link:../../packages/contracts-auth
       '@platformik/contracts-event-bus':
         specifier: workspace:*
         version: link:../../packages/contracts-event-bus
-      '@platformik/contracts-workflows':
-        specifier: workspace:*
-        version: link:../../packages/contracts-workflows
       '@platformik/lib-logger':
         specifier: workspace:*
         version: link:../../packages/lib-logger
@@ -349,21 +349,11 @@ importers:
         specifier: 'catalog:'
         version: 8.18.0
 
-  packages/contracts-auth: {}
-
   packages/contracts-event-bus:
     dependencies:
       zod:
         specifier: 'catalog:'
         version: 4.3.6
-
-  packages/contracts-primitives: {}
-
-  packages/contracts-workflows:
-    dependencies:
-      '@platformik/contracts-primitives':
-        specifier: workspace:*
-        version: link:../contracts-primitives
 
   packages/lib-logger:
     dependencies:
@@ -2659,6 +2649,10 @@ packages:
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
+
+  jsonc-eslint-parser@3.1.0:
+    resolution: {integrity: sha512-75EA7EWZExL/j+MDKQrRbdzcRI2HOkRlmUw8fZJc1ioqFEOvBsq7Rt+A6yCxOt9w/TYNpkt52gC6nm/g5tFIng==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -5733,6 +5727,12 @@ snapshots:
   json-schema-traverse@1.0.0: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
+
+  jsonc-eslint-parser@3.1.0:
+    dependencies:
+      acorn: 8.16.0
+      eslint-visitor-keys: 5.0.1
+      semver: 7.7.4
 
   keyv@4.5.4:
     dependencies:

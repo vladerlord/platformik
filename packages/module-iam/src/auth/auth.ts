@@ -17,7 +17,7 @@ import type {
   SignOutResult,
   SignUpBody,
   SignUpResult,
-} from '../contracts'
+} from '../public/contracts/auth'
 import type { IamDatabase } from '../db/schema'
 
 export type InternalIamAuth = {

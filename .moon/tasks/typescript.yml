@@ -15,9 +15,10 @@ tasks:
       runInCI: true
 
   lint:
-    command: 'eslint .'
+    command: 'eslint . package.json'
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - 'package.json'
       - '/tooling/eslint/base.config.mjs'
       - '/eslint.config.mjs'
     options:
@@ -25,9 +26,10 @@ tasks:
       runInCI: true
 
   lint-fix:
-    command: 'eslint --fix .'
+    command: 'eslint --fix . package.json'
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - 'package.json'
     options:
       cache: false
 
