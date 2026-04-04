@@ -1,3 +1,4 @@
 id: contracts-event-bus
 language: typescript
 layer: library
+dependsOn: []

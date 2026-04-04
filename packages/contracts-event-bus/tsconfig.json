@@ -1,9 +1,8 @@
 {
   "extends": "../../configs/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
-    "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["src", "__tests__"]
 }

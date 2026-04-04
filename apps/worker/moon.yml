@@ -1,6 +1,10 @@
 id: worker
 language: typescript
 layer: application
+dependsOn:
+  - contracts-event-bus
+  - lib-logger
+  - module-workflows
 
 fileGroups:
   sources:

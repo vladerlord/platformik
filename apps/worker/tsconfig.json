@@ -1,9 +1,19 @@
 {
   "extends": "../../configs/typescript/tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "composite": true,
-    "declaration": true
+    "emitDeclarationOnly": true,
+    "outDir": "dist"
   },
-  "include": ["src", "bin"]
+  "include": ["src", "bin"],
+  "references": [
+    {
+      "path": "../../packages/contracts-event-bus"
+    },
+    {
+      "path": "../../packages/lib-logger"
+    },
+    {
+      "path": "../../packages/module-workflows"
+    }
+  ]
 }

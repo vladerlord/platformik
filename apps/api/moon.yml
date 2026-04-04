@@ -1,6 +1,11 @@
 id: api
 language: typescript
 layer: application
+dependsOn:
+  - contracts-event-bus
+  - lib-logger
+  - module-iam
+  - module-workflows
 
 fileGroups:
   sources:
