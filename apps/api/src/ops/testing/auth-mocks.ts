@@ -6,6 +6,7 @@ import type {
   SignOutSuccessPayload,
   SignUpSuccessPayload,
 } from '@platformik/module-iam/contracts'
+import type { Result } from 'neverthrow'
 import { ok } from 'neverthrow'
 import { vi } from 'vitest'
 
@@ -32,13 +33,25 @@ const createSignOutSuccessPayload = (): SignOutSuccessPayload => ({
   success: true,
 })
 
-const createAuthSuccess = <TPayload>(payload: TPayload, status = 200, headers = new Headers()) => ({
+type AuthSuccess<TPayload> = {
+  headers: Headers
+  payload: TPayload
+  status: number
+}
+
+type AuthSuccessResult<TPayload> = Result<AuthSuccess<TPayload>, never>
+
+const createAuthSuccess = <TPayload>(
+  payload: TPayload,
+  status = 200,
+  headers = new Headers(),
+): AuthSuccess<TPayload> => ({
   headers,
   payload,
   status,
 })
 
-export const createSignInSuccess = (headers?: Headers) => {
+export const createSignInSuccess = (headers?: Headers): AuthSuccessResult<SignInSuccessPayload> => {
   const responseHeaders = headers ?? new Headers()
   if (headers === undefined) {
     responseHeaders.append('set-cookie', 'better-auth.session_token=opaque; HttpOnly; Path=/')
@@ -84,5 +97,8 @@ export const resetAuthIamMocks = (mocks: AuthIamMocks): void => {
   mocks.getSession.mockReset().mockResolvedValue(ok(createAuthSuccess<SessionResult | null>(null, 200)))
 }
 
-export const createSessionSuccess = (session: SessionResult | null, headers = new Headers()) =>
+export const createSessionSuccess = (
+  session: SessionResult | null,
+  headers: Headers = new Headers(),
+): AuthSuccessResult<SessionResult | null> =>
   ok(createAuthSuccess(session, 200, headers))

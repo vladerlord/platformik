@@ -6,6 +6,12 @@
       "path": "apps/api"
     },
     {
+      "path": "apps/cli"
+    },
+    {
+      "path": "apps/web"
+    },
+    {
       "path": "apps/worker"
     },
     {
@@ -19,6 +25,9 @@
     },
     {
       "path": "packages/module-workflows"
+    },
+    {
+      "path": "tooling/eslint"
     }
   ]
 }
