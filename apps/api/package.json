@@ -1,0 +1,29 @@
+{
+  "name": "@platformik/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@fastify/cors": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@fastify/sse": "catalog:",
+    "@platformik/contracts-event-bus": "workspace:*",
+    "@platformik/module-iam": "workspace:*",
+    "@platformik/module-workflows": "workspace:*",
+    "@platformik/lib-logger": "workspace:*",
+    "@temporalio/client": "catalog:",
+    "better-auth": "catalog:",
+    "fastify": "catalog:",
+    "fastify-type-provider-zod": "catalog:",
+    "kysely": "catalog:",
+    "nats": "catalog:",
+    "neverthrow": "catalog:",
+    "pg": "catalog:",
+    "ts-pattern": "catalog:",
+    "uuidv7": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/pg": "catalog:"
+  }
+}

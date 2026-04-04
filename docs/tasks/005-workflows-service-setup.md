@@ -1,4 +1,4 @@
-# service-workflows-ts — Implementation Plan
+# worker — Implementation Plan
 
 ## Before you start
 
@@ -35,7 +35,7 @@ Two new packages and one app:
 - `packages/contracts-workflows-proto` — gRPC interface source of truth (proto file)
 - `packages/contracts-workflows-ts` — generated TypeScript types + nice-grpc service definition
 - `packages/module-workflows-ts` — business module: DB schema, queries, migrations, domain types
-- `apps/service-workflows-ts` — gRPC server + Temporal worker + activities + composition root
+- `apps/worker` — gRPC server + Temporal worker + activities + composition root
 
 **Responsibility split:**
 
@@ -45,9 +45,9 @@ Two new packages and one app:
 | Generated gRPC TypeScript types | `contracts-workflows-ts`    |
 | DB schema, queries, migrations  | `module-workflows-ts`       |
 | Domain types (public contracts) | `module-workflows-ts`       |
-| Temporal workflow + activities  | `apps/service-workflows-ts` |
-| gRPC server + servicer          | `apps/service-workflows-ts` |
-| Process wiring + lifecycle      | `apps/service-workflows-ts` |
+| Temporal workflow + activities  | `apps/worker`               |
+| gRPC server + servicer          | `apps/worker`               |
+| Process wiring + lifecycle      | `apps/worker`               |
 
 ## Stack
 
@@ -191,8 +191,8 @@ Package name: `@platformik/contracts-workflows`.
 
 ### Purpose
 
-Generated TypeScript types and `nice-grpc` service definition. Used by `apps/service-workflows-ts` as the gRPC
-server implementation base, and by future `apps/cli-test-workflows-ts` as the gRPC client.
+Generated TypeScript types and `nice-grpc` service definition. Used by `apps/worker` as the gRPC server
+implementation base, and by future `apps/cli-test-workflows-ts` as the gRPC client.
 
 ### Codegen
 
@@ -333,7 +333,7 @@ Exports `createWorkflowsModule(deps: WorkflowsModuleDeps): WorkflowsModule` fact
 
 ---
 
-## Artifact 4: `apps/service-workflows-ts`
+## Artifact 4: `apps/worker`
 
 Package name: `@platformik/service-workflows`.
 
@@ -343,7 +343,7 @@ module, and starts the gRPC server and Temporal worker.
 ### Directory structure
 
 ```
-apps/service-workflows-ts/
+apps/worker/
   src/
     index.ts           # entry point: runs migrations, then gRPC server + Temporal worker concurrently
     config.ts          # Config interface + load()
@@ -459,7 +459,7 @@ If the node-type switch grows beyond ~5 branches, split each handler into a sepa
 ### `moon.yml`
 
 ```yaml
-id: service-workflows-ts
+id: worker
 language: typescript
 layer: application
 ```
@@ -484,8 +484,8 @@ moon run contracts-workflows-ts:fix
 moon run contracts-workflows-ts:validate
 moon run module-workflows-ts:fix
 moon run module-workflows-ts:validate
-moon run service-workflows-ts:fix
-moon run service-workflows-ts:validate
+moon run worker:fix
+moon run worker:validate
 ```
 
 ---

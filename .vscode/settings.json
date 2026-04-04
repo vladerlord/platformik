@@ -51,5 +51,6 @@
     "https://moonrepo.dev/schemas/v2/tasks.json": ".moon/tasks/*.yml"
   },
   "editor.rulers": [110],
-  "protobuf.protoc.path": "/opt/homebrew/bin/protoc"
+  "protobuf.protoc.path": "/opt/homebrew/bin/protoc",
+  "svelte.enable-ts-plugin": false
 }

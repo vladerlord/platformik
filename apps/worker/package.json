@@ -1,0 +1,22 @@
+{
+  "name": "@platformik/worker",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@platformik/contracts-event-bus": "workspace:*",
+    "@platformik/module-workflows": "workspace:*",
+    "@platformik/lib-logger": "workspace:*",
+    "@temporalio/activity": "catalog:",
+    "@temporalio/client": "catalog:",
+    "@temporalio/worker": "catalog:",
+    "@temporalio/workflow": "catalog:",
+    "kysely": "catalog:",
+    "nats": "catalog:",
+    "pg": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/pg": "catalog:"
+  }
+}

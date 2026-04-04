@@ -1,23 +1,28 @@
 $schema: 'https://moonrepo.dev/schemas/v2/tasks.json'
 
 inheritedBy:
-  languages: ['typescript', 'javascript']
+  languages: ['typescript']
 
 tasks:
   typecheck:
-    command: 'tsc --noEmit'
+    command: 'bun'
+    args: ['x', 'tsc', '--project', 'tsconfig.typecheck.json', '--noEmit']
     inputs:
-      - '**/*.{ts,tsx,mts,cts}'
+      - '**/*.{ts,tsx,mts,cts,d.ts}'
       - 'tsconfig.json'
+      - 'tsconfig.typecheck.json'
+      - 'package.json'
       - '/configs/typescript/tsconfig.base.json'
     options:
       cache: true
       runInCI: true
 
   lint:
-    command: 'eslint .'
+    command: 'eslint'
+    args: ['.', 'package.json']
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - 'package.json'
       - '/tooling/eslint/base.config.mjs'
       - '/eslint.config.mjs'
     options:
@@ -25,14 +30,17 @@ tasks:
       runInCI: true
 
   lint-fix:
-    command: 'eslint --fix .'
+    command: 'eslint'
+    args: ['--fix', '.', 'package.json']
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - 'package.json'
     options:
       cache: false
 
   format:
-    command: 'prettier --check "**/*.{ts,tsx,js,jsx,mts,cts,svelte}"'
+    command: 'prettier'
+    args: ['--check', '**/*.{ts,tsx,js,jsx,mts,cts,svelte}', '--no-error-on-unmatched-pattern']
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
       - '/prettier.config.mjs'
@@ -42,15 +50,19 @@ tasks:
       runInCI: true
 
   format-fix:
-    command: 'prettier --write "**/*.{ts,tsx,js,jsx,mts,cts,svelte}"'
+    command: 'prettier'
+    args: ['--write', '**/*.{ts,tsx,js,jsx,mts,cts,svelte}', '--no-error-on-unmatched-pattern']
     inputs:
       - '**/*.{ts,tsx,js,jsx,mts,cts,svelte}'
+      - '/prettier.config.mjs'
+      - '/.prettierignore'
     options:
       cache: false
       runInCI: false
 
   test:
-    command: 'vitest run --passWithNoTests'
+    command: 'vitest'
+    args: ['run', '--passWithNoTests']
     options:
       cache: false
       runInCI: true

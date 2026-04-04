@@ -1,0 +1,22 @@
+id: cli
+language: typescript
+layer: application
+dependsOn: []
+
+fileGroups:
+  sources:
+    - glob: 'src/**/*'
+      cache: true
+    - glob: 'bin/*'
+      cache: true
+    - glob: '/packages/**/*'
+      cache: true
+    - file: 'package.json'
+    - file: 'tsconfig.json'
+
+tasks:
+  cli:
+    command: 'mise x -- tsx bin/cli.tsx'
+    options:
+      cache: false
+      runInCI: false

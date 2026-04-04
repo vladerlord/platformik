@@ -1,6 +1,0 @@
-id: contracts-primitives-proto
-layer: library
-
-workspace:
-  inheritedTasks:
-    include: []

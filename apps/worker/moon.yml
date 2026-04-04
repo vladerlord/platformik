@@ -1,0 +1,27 @@
+id: worker
+language: typescript
+layer: application
+dependsOn:
+  - contracts-event-bus
+  - lib-logger
+  - module-workflows
+
+fileGroups:
+  sources:
+    - glob: 'src/**/*'
+      cache: true
+    - glob: 'bin/*'
+      cache: true
+    - glob: '/packages/**/*'
+      cache: true
+    - file: 'package.json'
+    - file: 'tsconfig.json'
+
+tasks:
+  server:
+    command: mise x -- tsx watch bin/server.ts
+    inputs:
+      - '@group(sources)'
+    options:
+      runInCI: false
+      persistent: true

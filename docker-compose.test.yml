@@ -13,14 +13,3 @@ services:
       POSTGRES_USER: platformik-user
       POSTGRES_PASSWORD: platformik-password
       POSTGRES_DB: platformik_iam_test
-
-  redis-test:
-    image: redis:7-alpine
-    ports:
-      - '52101:6379'
-    restart: 'no'
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 10s
-      timeout: 5s
-      retries: 5

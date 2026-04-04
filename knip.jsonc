@@ -3,7 +3,7 @@
   "workspaces": {
     "apps/*": {
       "entry": ["bin/*.{ts,tsx}"],
-      "project": ["src/**/*.{ts,tsx}", "bin/*.{ts,tsx}"],
+      "project": ["src/**/*.{ts,tsx,svelte}", "bin/*.{ts,tsx}"],
     },
     "packages/*": {
       "entry": ["src/index.ts"],
@@ -20,4 +20,15 @@
   "vitest": true,
   "sveltekit": true,
   "ignoreExportsUsedInFile": true,
+  "ignoreDependencies": [
+    "@eslint/js",
+    "eslint-plugin-svelte",
+    "globals",
+    "typescript-eslint",
+    "tsx",
+    "esbuild",
+    "tailwindcss",
+    "svelte-check",
+  ],
+  "ignore": ["apps/api/src/ops/fastify/fastify.types.ts"],
 }

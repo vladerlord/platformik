@@ -1,0 +1,22 @@
+{
+  "name": "@platformik/module-iam",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/public/module.ts",
+  "module": "./src/public/module.ts",
+  "types": "./src/public/module.ts",
+  "exports": {
+    ".": "./src/public/module.ts",
+    "./contracts": "./src/public/contracts/index.ts",
+    "./migrations": "./src/public/migrations.ts"
+  },
+  "dependencies": {
+    "@better-auth/kysely-adapter": "catalog:",
+    "better-auth": "catalog:",
+    "kysely": "catalog:",
+    "neverthrow": "catalog:",
+    "uuidv7": "catalog:",
+    "zod": "catalog:"
+  }
+}

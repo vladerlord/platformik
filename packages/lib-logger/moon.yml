@@ -1,0 +1,4 @@
+id: lib-logger
+language: typescript
+layer: library
+dependsOn: []

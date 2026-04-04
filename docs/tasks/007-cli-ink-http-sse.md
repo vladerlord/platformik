@@ -16,16 +16,16 @@ The monorepo already contains:
 
 | Path                                    | Role                                                        |
 | --------------------------------------- | ----------------------------------------------------------- |
-| `apps/cli-platform-ts`                  | CLI client — currently built with Effect-TS + readline REPL |
+| `apps/cli`                              | CLI client — currently built with Effect-TS + readline REPL |
 | `apps/bff-cli-platform-ts`              | BFF for CLI — currently a gRPC server (nice-grpc)           |
 | `packages/contracts-cli-platform-proto` | Proto source for CLI ↔ BFF gRPC interface                   |
 | `packages/contracts-cli-platform-ts`    | Generated TypeScript gRPC stubs                             |
-| `apps/service-workflows-ts`             | Workflow orchestration service (gRPC, Temporal)             |
+| `apps/worker`                           | Workflow orchestration service (gRPC, Temporal)             |
 | `packages/module-iam-ts`                | IAM module — sign-up, sign-in, session management           |
 
 ### Current state
 
-`apps/cli-platform-ts` is built on **Effect-TS** with a readline-based REPL. It communicates with
+`apps/cli` is built on **Effect-TS** with a readline-based REPL. It communicates with
 `apps/bff-cli-platform-ts` over **gRPC unary** calls using `nice-grpc`. The BFF is also an Effect-TS
 application serving a gRPC endpoint.
 
@@ -36,15 +36,14 @@ application that demonstrates the patterns we want to adopt.
 
 ## Goal
 
-1. **Rewrite `apps/cli-platform-ts`** from Effect-TS to [Ink](https://github.com/vadimdemedes/ink) (React for
-   CLI), removing the Effect runtime entirely from the CLI app.
-2. **Replace gRPC transport** between `cli-platform-ts` and `bff-cli-platform-ts` with **HTTP REST + SSE**
-   (Server-Sent Events).
+1. **Rewrite `apps/cli`** from Effect-TS to [Ink](https://github.com/vadimdemedes/ink) (React for CLI),
+   removing the Effect runtime entirely from the CLI app.
+2. **Replace gRPC transport** between `cli` and `bff-cli-platform-ts` with **HTTP REST + SSE** (Server-Sent
+   Events).
 3. **Rewrite `apps/bff-cli-platform-ts`** from a gRPC server to an **HTTP server** (e.g., Fastify or Hono)
    that serves REST endpoints and SSE streams.
 
-The BFF still communicates with `service-workflows-ts` over gRPC internally — only the CLI ↔ BFF transport
-changes.
+The BFF still communicates with `worker` over gRPC internally — only the CLI ↔ BFF transport changes.
 
 ---
 
@@ -55,27 +54,27 @@ changes.
 Before:
 
 ```
-CLI ──gRPC unary──► bff-cli-platform-ts ──gRPC unary──► service-workflows-ts
+CLI ──gRPC unary──► bff-cli-platform-ts ──gRPC unary──► worker
 ```
 
 After:
 
 ```
-CLI ──HTTP/SSE──► bff-cli-platform-ts ──gRPC unary──► service-workflows-ts
+CLI ──HTTP/SSE──► bff-cli-platform-ts ──gRPC unary──► worker
 ```
 
 ### Tech stack change
 
 | Component             | Before                         | After                               |
 | --------------------- | ------------------------------ | ----------------------------------- |
-| `cli-platform-ts`     | Effect-TS, readline, nice-grpc | Ink (React), HTTP client (fetch/ky) |
+| `cli`                 | Effect-TS, readline, nice-grpc | Ink (React), HTTP client (fetch/ky) |
 | `bff-cli-platform-ts` | Effect-TS, nice-grpc server    | HTTP server (Fastify or Hono), SSE  |
 | CLI ↔ BFF transport   | gRPC unary                     | HTTP REST + SSE                     |
 | BFF ↔ workflows       | gRPC (unchanged)               | gRPC (unchanged)                    |
 
 ---
 
-## CLI Rewrite — `apps/cli-platform-ts`
+## CLI Rewrite — `apps/cli`
 
 ### Framework
 
@@ -111,7 +110,7 @@ Replace with:
 ### CLI structure
 
 ```
-apps/cli-platform-ts/
+apps/cli/
 ├── bin/
 │   └── cli.tsx              # Entry point — render(<App />)
 ├── src/
@@ -269,7 +268,7 @@ SSE.
 The BFF subscribes to run state changes and pushes them to connected SSE clients. Options:
 
 1. **Poll PostgreSQL** via `GetWorkflowRunView` on the backend (simplest, reuses existing gRPC call to
-   `service-workflows-ts`)
+   `worker`)
 2. **Subscribe to Redis Streams** for real-time events from `event_outbox` dispatcher (more efficient, uses
    existing event bus)
 
@@ -337,7 +336,7 @@ Recommended: Option A if we want runtime validation on both sides. Option B for 
 
 ### Internal gRPC unchanged
 
-`bff-cli-platform-ts` → `service-workflows-ts` communication remains gRPC. No changes to:
+`bff-cli-platform-ts` → `worker` communication remains gRPC. No changes to:
 
 - `packages/contracts-workflows-proto`
 - `packages/contracts-workflows-ts`
@@ -346,7 +345,7 @@ Recommended: Option A if we want runtime validation on both sides. Option B for 
 
 ## Dependencies Change
 
-### `apps/cli-platform-ts` — new dependencies
+### `apps/cli` — new dependencies
 
 | Add                | Purpose                                           |
 | ------------------ | ------------------------------------------------- |
@@ -379,13 +378,13 @@ Recommended: Option A if we want runtime validation on both sides. Option B for 
 | `@platformik/contracts-cli-platform-ts` | gRPC stubs no longer needed     |
 | `@platformik/runtime-pino-ts`           | Effect-based logger, not needed |
 
-Note: The BFF still needs `nice-grpc` as a **client** to talk to `service-workflows-ts` over gRPC.
+Note: The BFF still needs `nice-grpc` as a **client** to talk to `worker` over gRPC.
 
 ---
 
 ## Out of Scope
 
-- Changes to `service-workflows-ts` — stays as-is with gRPC
+- Changes to `worker` — stays as-is with gRPC
 - Changes to `module-iam-ts` — the BFF still uses it the same way, just without Effect wrapping
 - WebSocket support — SSE is sufficient for server→client push
 - Token persistence to disk — token remains in memory for now
@@ -401,14 +400,14 @@ Note: The BFF still needs `nice-grpc` as a **client** to talk to `service-workfl
 - Replace gRPC server with Hono (or Fastify)
 - Implement REST endpoints for all existing RPCs
 - Implement SSE endpoint for run events
-- Keep gRPC client to `service-workflows-ts`
+- Keep gRPC client to `worker`
 - Remove Effect-TS, use plain async/await + `neverthrow`
 - Keep IAM integration via `module-iam-ts`
 - Validate:
   - `moon run bff-cli-platform-ts:fix`
   - `moon run bff-cli-platform-ts:validate`
 
-### Step 2 — Rewrite `apps/cli-platform-ts` to Ink
+### Step 2 — Rewrite `apps/cli` to Ink
 
 - Replace Effect-TS runtime with Ink (React)
 - Implement HTTP client for BFF communication
@@ -416,8 +415,8 @@ Note: The BFF still needs `nice-grpc` as a **client** to talk to `service-workfl
 - Build Ink components: login, workflow list, run view, message renderer, option input
 - Implement REPL commands as component state transitions
 - Validate:
-  - `moon run cli-platform-ts:fix`
-  - `moon run cli-platform-ts:validate`
+  - `moon run cli:fix`
+  - `moon run cli:validate`
 
 ### Step 3 — Remove unused gRPC contracts
 
@@ -429,8 +428,8 @@ Note: The BFF still needs `nice-grpc` as a **client** to talk to `service-workfl
 
 ### Step 4 — Integration smoke test
 
-- Start PostgreSQL, Redis, `service-workflows-ts`, and `bff-cli-platform-ts`
-- Run `apps/cli-platform-ts --login <email> --password <pass>`
+- Start PostgreSQL, Redis, `worker`, and `bff-cli-platform-ts`
+- Run `apps/cli --login <email> --password <pass>`
 - Verify:
   - Login succeeds with seeded dev credentials
   - `/workflows` renders workflow list via Ink components
@@ -448,9 +447,9 @@ Note: The BFF still needs `nice-grpc` as a **client** to talk to `service-workfl
 | Invariant                                | Enforced by                                     |
 | ---------------------------------------- | ----------------------------------------------- |
 | CLI ↔ BFF communication is HTTP/SSE only | No gRPC dependency in CLI                       |
-| BFF ↔ service-workflows-ts remains gRPC  | nice-grpc client in BFF                         |
+| BFF ↔ worker remains gRPC                | nice-grpc client in BFF                         |
 | No Effect-TS in CLI or BFF               | Dependencies removed, Ink + async/await         |
 | SSE replaces client-side polling         | BFF pushes updates, CLI subscribes              |
 | Auth flow unchanged semantically         | Bearer token over HTTP instead of gRPC metadata |
 | Run ownership still verified by BFF      | Auth middleware on all endpoints                |
-| PostgreSQL remains source of truth       | No changes to service-workflows-ts              |
+| PostgreSQL remains source of truth       | No changes to worker                            |

@@ -1,0 +1,22 @@
+{
+  "extends": "../../configs/typescript/tsconfig.base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "outDir": "dist"
+  },
+  "include": ["src", "bin"],
+  "references": [
+    {
+      "path": "../../packages/contracts-event-bus"
+    },
+    {
+      "path": "../../packages/lib-logger"
+    },
+    {
+      "path": "../../packages/module-iam"
+    },
+    {
+      "path": "../../packages/module-workflows"
+    }
+  ]
+}
