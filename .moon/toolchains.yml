@@ -1,7 +1,11 @@
 $schema: 'https://moonrepo.dev/schemas/v2/toolchains.json'
 
-node:
+javascript:
   packageManager: 'pnpm'
 
+node: {}
+
+pnpm: {}
+
 typescript:
-  syncProjectReferences: false
+  syncProjectReferences: true
